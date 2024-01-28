@@ -2,6 +2,10 @@
   "name": "babel-preset-honey",
   "version": "1.0.0",
   "description": "Babel preset for the Honey JS framework.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natethedev1/honey"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/babel__core": "^7.20.5",
@@ -23,6 +27,6 @@
   "dependencies": {
     "@babel/core": "^7.23.9",
     "@babel/plugin-syntax-jsx": "^7.23.3",
-    "babel-plugin-transform-honey-jsx": "^1.0.0"
+    "babel-plugin-transform-honey-jsx": "^1.0.1"
   }
 }

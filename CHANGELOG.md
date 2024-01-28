@@ -7,7 +7,7 @@ Examples and a test project has been added for testing the `honey` package
 ### Packages
 
 -   `babel-preset-honey` [stable-1.0.0]
--   `babel-plugin-transform-honey-jsx` [stable-1.0.0]
+-   `babel-plugin-transform-honey-jsx` [stable-1.0.1]
 
 ### Other
 

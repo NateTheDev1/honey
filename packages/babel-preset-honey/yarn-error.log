@@ -1,0 +1,57 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn add babel-plugin-transform-honey-jsx
+
+PATH: 
+  /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbi:/Users/nrichards/.cargo/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/sbin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.8.0
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  SyntaxError: /Users/nrichards/honey/packages/babel-preset-honey/package.json: Unexpected token } in JSON at position 513
+      at JSON.parse (<anonymous>)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "babel-preset-honey",
+    "version": "1.0.0",
+    "description": "Babel preset for the Honey JS framework.",
+    "license": "MIT",
+    "devDependencies": {
+      "@types/babel__core": "^7.20.5",
+      "typescript": "^5.3.3"
+    },
+    "scripts": {
+      "build": "tsc"
+    },
+    "files": [
+      "dist"
+    ],
+    "keywords": [
+      "babel",
+      "preset",
+      "honey"
+    ],
+    "author": "Nathaniel Richards",
+    "main": "dist/index.js",
+    "dependencies": {
+      "@babel/core": "^7.23.9",
+      "@babel/plugin-syntax-jsx": "^7.23.3",
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
