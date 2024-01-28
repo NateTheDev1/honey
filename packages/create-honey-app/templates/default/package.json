@@ -6,7 +6,11 @@
         "start": "honey-scripts start",
         "build": "honey-scripts build"
     },
-    "dependencies": {},
+    "dependencies": {
+        "honey-scripts": "1.0.4",
+        "honey-js-core": "1.0.0",
+        "babel-preset-honey": "1.0.0"
+    },
     "devDependencies": {
         "typescript": "^5.3.3"
     }
