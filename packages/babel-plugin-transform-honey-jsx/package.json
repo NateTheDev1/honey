@@ -1,11 +1,28 @@
 {
   "name": "babel-plugin-transform-honey-jsx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
+  "author": "Nathaniel Richards",
+  "keywords": [
+    "babel",
+    "babel-plugin",
+    "jsx",
+    "honey"
+  ],
+  "description": "A babel plugin to transform JSX into Honey",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natethedev1/honey"
+  },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
-    "@babel/core": "^7.23.9",
     "@types/babel__core": "^7.20.5",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.9"
   },
   "scripts": {
     "build": "tsc"

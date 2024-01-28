@@ -1,18 +1,28 @@
 {
   "name": "babel-preset-honey",
   "version": "1.0.0",
+  "description": "Babel preset for the Honey JS framework.",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.23.9",
     "@types/babel__core": "^7.20.5",
-    "babel-plugin-transform-honey-jsx": "file:../babel-plugin-transform-honey-jsx/dist",
     "typescript": "^5.3.3"
   },
   "scripts": {
     "build": "tsc"
   },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "babel",
+    "preset",
+    "honey"
+  ],
+  "author": "Nathaniel Richards",
   "main": "dist/index.js",
   "dependencies": {
-    "@babel/plugin-syntax-jsx": "^7.23.3"
+    "@babel/core": "^7.23.9",
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "babel-plugin-transform-honey-jsx": "^1.0.0"
   }
 }
