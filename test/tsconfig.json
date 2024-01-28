@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "module": "es6",
+        "target": "es5",
+        "jsx": "react",
+        "jsxFactory": "honey.createElement",
+        "moduleResolution": "Node"
+    },
+    "include": ["./src/**/*"]
+}
