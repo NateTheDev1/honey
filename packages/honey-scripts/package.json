@@ -1,0 +1,12 @@
+{
+  "name": "honey-scripts",
+  "version": "1.0.0",
+  "bin": {
+    "honey": "./bin/honey.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "node scripts/start.js",
+    "build": "node scripts/build.js"
+  }
+}
