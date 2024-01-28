@@ -6,10 +6,10 @@
   "dependencies": {
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
-    "@babel/preset-react": "^7.23.3",
     "babel-loader": "^9.1.3",
-    "honey": "file:../packages/honey/dist",
     "babel-plugin-transform-honey-jsx": "file:../packages/babel-plugin-transform-honey-jsx/dist",
+    "babel-preset-honey": "file:../packages/babel-preset-honey/dist",
+    "honey": "file:../packages/honey/dist",
     "html-webpack-plugin": "^5.6.0",
     "typescript": "^5.3.3",
     "webpack": "^5.90.0",
@@ -17,6 +17,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "scripts": {
-    "start": "webpack serve --mode development"
+    "start": "webpack serve --mode development",
+    "start:dev": "rm -rf ./node_modules && yarn install && yarn run start"
   }
 }

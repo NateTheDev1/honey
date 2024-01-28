@@ -13,7 +13,10 @@ module.exports = {
                 test: /\.(js|jsx|ts|tsx)$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader'
+                    loader: 'babel-loader',
+                    options: {
+                        configFile: path.resolve(__dirname, '.babelrc') // or 'babel.config.json'
+                    }
                 }
             }
         ]

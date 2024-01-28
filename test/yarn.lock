@@ -1479,6 +1479,12 @@ babel-plugin-polyfill-regenerator@^0.5.5:
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.5.0"
 
+"babel-plugin-transform-honey-jsx@file:../packages/babel-plugin-transform-honey-jsx/dist":
+  version "0.0.0"
+
+"babel-preset-honey@file:../packages/babel-preset-honey/dist":
+  version "0.0.0"
+
 balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"

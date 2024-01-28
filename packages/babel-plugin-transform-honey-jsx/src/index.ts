@@ -11,6 +11,8 @@ export default function (babel: Babel): PluginObj<PluginPass> {
     return {
         visitor: {
             JSXElement(path) {
+                console.log('Original JSX Element:', path.node);
+
                 const openingElement = path.node.openingElement;
                 const attributes = openingElement.attributes
                     .map(attr => {
@@ -91,6 +93,11 @@ export default function (babel: Babel): PluginObj<PluginPass> {
                         t.identifier('createElement')
                     ),
                     args
+                );
+
+                console.log(
+                    'Transformed createElement call:',
+                    createElementCall
                 );
 
                 path.replaceWith(createElementCall);

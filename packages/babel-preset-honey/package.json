@@ -11,5 +11,8 @@
   "scripts": {
     "build": "tsc"
   },
-  "main": "dist/index.js"
+  "main": "dist/index.js",
+  "dependencies": {
+    "@babel/plugin-syntax-jsx": "^7.23.3"
+  }
 }

@@ -5,8 +5,8 @@
         "noImplicitAny": false,
         "module": "es6",
         "target": "es5",
-        "jsx": "react",
-        "jsxFactory": "honey.createElement",
+        "jsx": "preserve",
+        // "jsxFactory": "honey.createElement",
         "moduleResolution": "Node"
     },
     "include": ["./src/**/*"]
