@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "es5", // Compile to ES5
+      "module": "esnext", // Use ES6 modules
+      "jsx": "react", // Support for JSX
+      "strict": true, // Enable all strict type-checking options
+      "moduleResolution": "node", // Module resolution strategy
+      "esModuleInterop": true, // Enables ES6 module emulation
+      "skipLibCheck": true, // Skip type checking of declaration files
+      "outDir": "./dist", // Output directory for compiled files
+      "sourceMap": true // Enable source maps for debugging
+    },
+    "include": ["src/**/*"] // Include all files in the src directory
+  }
