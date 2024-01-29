@@ -1,8 +1,6 @@
+import { renderWithAdapters } from './adapters';
+
 export const render = (vnode, container) => {
-    console.log('vnode', vnode);
-
-    console.log('container', container);
-
     if (!vnode) return;
 
     if (typeof vnode === 'string' || typeof vnode === 'number') {
@@ -12,8 +10,9 @@ export const render = (vnode, container) => {
     } else if (typeof vnode.type === 'function') {
         // Handle functional components
         const component = vnode.type(vnode.props);
+        renderWithAdapters(vnode.type, container, vnode.props);
+
         console.log('component', component);
-        render(component, container);
     } else if (typeof vnode === 'object' && typeof vnode.type === 'string') {
         // Handle HTML element nodes
         const domElement = document.createElement(vnode.type);
