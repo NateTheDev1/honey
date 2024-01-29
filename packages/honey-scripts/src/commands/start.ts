@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
+import CopyPlugin from 'copy-webpack-plugin';
 
 export default function start() {
     const webpackConfig: any = {
@@ -9,7 +10,8 @@ export default function start() {
         entry: './src/index.tsx',
         output: {
             path: path.resolve(process.cwd(), 'dist'),
-            filename: 'bundle.js'
+            filename: 'bundle.js',
+            publicPath: '/'
         },
         module: {
             rules: [
@@ -25,12 +27,23 @@ export default function start() {
                             ]
                         }
                     }
+                },
+                {
+                    test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                    type: 'asset/resource'
+                },
+                {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader']
                 }
             ]
         },
         plugins: [
             new HtmlWebpackPlugin({
                 template: './public/index.html'
+            }),
+            new CopyPlugin({
+                patterns: [{ from: 'public', to: 'dist' }]
             })
         ],
         resolve: {
@@ -38,7 +51,10 @@ export default function start() {
             modules: [path.resolve('./node_modules'), 'node_modules']
         },
         devServer: {
-            static: path.join(process.cwd(), 'dist'),
+            static: [
+                path.join(process.cwd(), 'dist'),
+                path.join(process.cwd(), 'public')
+            ],
             compress: true,
             port: 3000
         }

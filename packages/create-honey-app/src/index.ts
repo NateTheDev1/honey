@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as child_process from 'child_process';
 
 const deps: string[] = [];
-const devDeps: string[] = [''];
+const devDeps: string[] = [];
 
 function createApp(appName: string, jsType: 'ts' | 'js') {
     const appDirectory = path.resolve(process.cwd(), appName);
@@ -14,7 +14,6 @@ function createApp(appName: string, jsType: 'ts' | 'js') {
     // Copy template files to appDirectory...
     const templateDirectory = path.resolve(
         __dirname,
-        '..',
         'templates',
         jsType === 'ts' ? 'default' : 'js-only'
     );
