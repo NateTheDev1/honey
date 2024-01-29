@@ -1,31 +1,47 @@
-export const render = (vnode: any, container: HTMLElement) => {
+export const render = (vnode, container) => {
     console.log('vnode', vnode);
 
-    // Text node
-    if (typeof vnode === 'string') {
-        const textNode = document.createTextNode(vnode);
+    console.log('container', container);
+
+    if (!vnode) return;
+
+    if (typeof vnode === 'string' || typeof vnode === 'number') {
+        // Handle text nodes
+        const textNode = document.createTextNode(String(vnode));
         container.appendChild(textNode);
-        return;
-    }
+    } else if (typeof vnode.type === 'function') {
+        // Handle functional components
+        const component = vnode.type(vnode.props);
+        console.log('component', component);
+        render(component, container);
+    } else if (typeof vnode === 'object' && typeof vnode.type === 'string') {
+        // Handle HTML element nodes
+        const domElement = document.createElement(vnode.type);
 
-    // Element node
-    const domElement = document.createElement(vnode.type);
-
-    domElement.textContent = vnode.children[0];
-
-    // Set attributes/props
-    Object.keys(vnode.props || {}).forEach(propName => {
-        if (propName === 'children') {
-            // Recursive call for children
-            vnode.props.children.forEach((child: any) =>
-                render(child, domElement)
-            );
-        } else {
-            // Set properties or attributes on the element
-            domElement[propName] = vnode.props[propName];
+        // Set properties/attributes
+        if (vnode.props) {
+            Object.keys(vnode.props).forEach(propName => {
+                if (propName !== 'children') {
+                    const value = vnode.props[propName];
+                    // If it is an event listener (e.g., onClick)
+                    if (propName.startsWith('on')) {
+                        domElement.addEventListener(
+                            propName.substring(2).toLowerCase(),
+                            value
+                        );
+                    } else {
+                        // For normal attributes and properties
+                        domElement[propName] = value;
+                    }
+                }
+            });
         }
-    });
 
-    // Append to container
-    container.appendChild(domElement);
+        // Recursive call for children
+        if (vnode.children) {
+            vnode.children.forEach(child => render(child, domElement));
+        }
+
+        container.appendChild(domElement);
+    }
 };

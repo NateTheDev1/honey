@@ -10,9 +10,10 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "outDir": "./dist",
+        "noImplicitAny": false,
         "sourceMap": true,
         "lib": ["dom", "es2015", "es2016", "es2017"]
     },
-    "include": ["src/**/*", "jsx.d.ts"],
+    "include": ["src/**/*", "jsx.d.ts", "src/renderer.ts"],
     "exclude": ["node_modules"]
 }

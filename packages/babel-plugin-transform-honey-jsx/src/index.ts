@@ -11,8 +11,6 @@ export default function (babel: Babel): PluginObj<PluginPass> {
     return {
         visitor: {
             JSXElement(path) {
-                console.log('Original JSX Element:', path.node);
-
                 const openingElement = path.node.openingElement;
                 const attributes = openingElement.attributes
                     .map(attr => {
@@ -85,7 +83,28 @@ export default function (babel: Babel): PluginObj<PluginPass> {
                     typeName = 'unknownType';
                 }
 
-                const type = t.stringLiteral(typeName);
+                let type;
+                if (t.isJSXIdentifier(openingElement.name)) {
+                    const name = openingElement.name.name;
+                    if (isComponent(name)) {
+                        // If the name starts with an uppercase letter, treat it as a component
+                        type = t.identifier(name);
+                    } else {
+                        // Otherwise, treat it as a standard HTML tag
+                        type = t.stringLiteral(name);
+                    }
+                } else if (t.isJSXMemberExpression(openingElement.name)) {
+                    // Handle member expressions
+                    type = convertJSXMemberExpressionToMemberExpression(
+                        openingElement.name,
+                        t
+                    );
+                } else {
+                    // For other cases like namespaced names, handle appropriately
+                    // You can decide how to handle this case based on your requirements
+                    type = t.stringLiteral('unknownType');
+                }
+
                 const args = [type, props, ...children];
                 const createElementCall = t.callExpression(
                     t.memberExpression(
@@ -95,15 +114,31 @@ export default function (babel: Babel): PluginObj<PluginPass> {
                     args
                 );
 
-                console.log(
-                    'Transformed createElement call:',
-                    createElementCall
-                );
-
                 path.replaceWith(createElementCall);
             }
         }
     };
+}
+
+function isComponent(name: string) {
+    return /^[A-Z]/.test(name);
+}
+
+function convertJSXMemberExpressionToMemberExpression(
+    memberExpr: any,
+    t: any
+): any {
+    if (t.isJSXMemberExpression(memberExpr.object)) {
+        return t.memberExpression(
+            convertJSXMemberExpressionToMemberExpression(memberExpr.object, t),
+            t.identifier(memberExpr.property.name)
+        );
+    } else {
+        return t.memberExpression(
+            t.identifier(memberExpr.object.name),
+            t.identifier(memberExpr.property.name)
+        );
+    }
 }
 
 function getMemberExpressionName(memberExpr: t.JSXMemberExpression): string {

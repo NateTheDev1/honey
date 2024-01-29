@@ -1590,19 +1590,19 @@ babel-plugin-polyfill-regenerator@^0.5.5:
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.5.0"
 
-babel-plugin-transform-honey-jsx@^1.0.1, "babel-plugin-transform-honey-jsx@file:F:\\honey\\packages\\babel-plugin-transform-honey-jsx":
-  version "1.0.1"
+babel-plugin-transform-honey-jsx@^1.0.3, "babel-plugin-transform-honey-jsx@file:F:\\honey\\packages\\babel-plugin-transform-honey-jsx":
+  version "1.0.3"
   resolved "file:packages/babel-plugin-transform-honey-jsx"
   dependencies:
     "@babel/core" "^7.23.9"
 
 "babel-preset-honey@file:F:\\honey\\packages\\babel-preset-honey":
-  version "1.0.0"
+  version "1.0.2"
   resolved "file:packages/babel-preset-honey"
   dependencies:
     "@babel/core" "^7.23.9"
     "@babel/plugin-syntax-jsx" "^7.23.3"
-    babel-plugin-transform-honey-jsx "^1.0.1"
+    babel-plugin-transform-honey-jsx "^1.0.3"
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -1905,7 +1905,7 @@ core-util-is@~1.0.0:
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
 "create-honey-app@file:F:\\honey\\packages\\create-honey-app":
-  version "1.0.4"
+  version "1.0.5"
   resolved "file:packages/create-honey-app"
   dependencies:
     fs-extra "^11.2.0"
