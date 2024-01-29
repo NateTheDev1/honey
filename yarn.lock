@@ -2474,7 +2474,7 @@ he@^1.2.0:
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
 "honey-js-core@file:F:\\honey\\packages\\honey":
-  version "1.0.0"
+  version "1.0.1"
   resolved "file:packages/honey"
 
 "honey-scripts@file:F:\\honey\\packages\\honey-scripts":
