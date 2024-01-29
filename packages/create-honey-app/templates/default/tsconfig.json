@@ -6,7 +6,6 @@
         "module": "es6",
         "target": "es5",
         "jsx": "preserve",
-        // "jsxFactory": "honey.createElement",
         "moduleResolution": "Node"
     },
     "include": ["./src/**/*"]

@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        /* Basic Options */
+        "target": "es2019", // Set the JavaScript version for emitted JavaScript and included lib.d.ts
+        "module": "commonjs", // Use commonjs modules, suitable for Node.js
+        "lib": ["es2019"], // Include typings for ES2019
+        "outDir": "./dist", // Output directory for compiled files
+        "rootDir": "./src", // Root directory of source files
+        "strict": true, // Enable all strict type-checking options
+        "esModuleInterop": true, // Enables compatibility with Babel-style module imports
+        "skipLibCheck": true, // Skip type checking for all declaration files
+        "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
+
+        /* Additional Checks */
+        "noImplicitAny": true, // Raise error on expressions and declarations with an implied 'any' type
+        "noUnusedLocals": true, // Report errors on unused locals
+        "noUnusedParameters": true, // Report errors on unused parameters
+
+        /* Module Resolution Options */
+        "resolveJsonModule": true, // Include modules imported with '.json' extension
+        "moduleResolution": "node", // Resolve modules using Node.js style
+
+        /* Source Map Options */
+        "sourceMap": true // Create source maps for debugging
+    },
+    "include": ["src/**/*"], // Files to be included in compilation
+    "exclude": ["node_modules", "dist"] // Folders to be excluded from compilation
+}

@@ -1,0 +1,10 @@
+# Allow all bots to access the entire website
+User-agent: *
+Allow: /
+
+# Disallow a single bot from a specific folder
+# User-agent: Googlebot
+# Disallow: /example-subfolder/
+
+# Sitemap Parameter
+# Sitemap: https://www.yoursite.com/sitemap.xml

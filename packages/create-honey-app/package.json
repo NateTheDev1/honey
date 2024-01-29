@@ -1,0 +1,23 @@
+{
+  "name": "create-honey-app",
+  "version": "1.0.4",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "create-honey-app": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.10",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0"
+  }
+}
