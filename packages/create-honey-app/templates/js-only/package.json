@@ -7,7 +7,7 @@
         "build": "honey-scripts build"
     },
     "dependencies": {
-        "honey-scripts": "1.0.8",
+        "honey-scripts": "1.0.9",
         "honey-js-core": "1.0.0",
         "babel-preset-honey": "1.0.0"
     }

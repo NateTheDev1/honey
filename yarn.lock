@@ -1905,7 +1905,7 @@ core-util-is@~1.0.0:
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
 "create-honey-app@file:F:\\honey\\packages\\create-honey-app":
-  version "1.0.3"
+  version "1.0.4"
   resolved "file:packages/create-honey-app"
   dependencies:
     fs-extra "^11.2.0"
