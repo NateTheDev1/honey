@@ -1,4 +1,4 @@
-import { createElement } from './createElement';
+import { createElement } from '../createElement';
 
 /**
  * Delays loading of imported component until rendered.

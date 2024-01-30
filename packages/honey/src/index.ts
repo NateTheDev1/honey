@@ -1,13 +1,7 @@
 import { createElement } from './createElement';
 import { render } from './renderer';
-export {
-    inspectLifecycle,
-    createJar,
-    createGlobalJar,
-    getGlobalJar
-} from './adapters';
 
-export { delayLoad } from './delayLoad';
+export * from './adapters/index';
 
 export default { createElement, render };
 
