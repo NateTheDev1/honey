@@ -3,6 +3,7 @@ import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import CopyPlugin from 'copy-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
 export default function start() {
     const webpackConfig: any = {
@@ -44,6 +45,9 @@ export default function start() {
             }),
             new CopyPlugin({
                 patterns: [{ from: 'public', to: 'dist' }]
+            }),
+            new ForkTsCheckerWebpackPlugin({
+                async: false // This option will fail the build on any type error
             })
         ],
         resolve: {

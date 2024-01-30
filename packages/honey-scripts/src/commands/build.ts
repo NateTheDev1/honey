@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
 export default function build() {
     const webpackConfig: any = {
@@ -34,6 +35,9 @@ export default function build() {
         plugins: [
             new HtmlWebpackPlugin({
                 template: './public/index.html'
+            }),
+            new ForkTsCheckerWebpackPlugin({
+                async: false // This option will fail the build on any type error
             })
         ],
         resolve: {
