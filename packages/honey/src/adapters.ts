@@ -92,8 +92,10 @@ export function createJar<T>(initialValue: T) {
     // Initialize state and setter if this is the first render
     if (index === stateEntry.state.length) {
         const setter = newValue => {
-            stateEntry.state[index] = newValue;
-            rerenderComponent(componentName);
+            if (stateEntry.state[index] !== newValue) {
+                stateEntry.state[index] = newValue;
+                rerenderComponent(componentName);
+            }
         };
         stateEntry.state.push(initialValue);
         stateEntry.setters.push(setter);
@@ -106,7 +108,11 @@ const globalJars = new Map();
 
 export function createGlobalJar(key, initialValue) {
     if (globalJars.has(key)) {
-        return [globalJars.get(key).value, globalJars.get(key).setter];
+        // If the jar already exists, return the existing value and setter
+        const existingJar = globalJars.get(key);
+        // Ensure the current component is subscribed for updates
+        existingJar.subscribers.add(currentComponent);
+        return [existingJar.value, existingJar.setter];
     }
 
     let value = initialValue;
@@ -115,15 +121,16 @@ export function createGlobalJar(key, initialValue) {
     const setter = newValue => {
         if (value !== newValue) {
             value = newValue;
-
             globalJars.set(key, { value, subscribers, setter });
 
             subscribers.forEach(subscriber => {
-                // Assuming subscriber is the component name
                 rerenderComponent(subscriber);
             });
         }
     };
+
+    // Subscribe the component that created the jar
+    subscribers.add(currentComponent);
 
     globalJars.set(key, { value, subscribers, setter });
     return [value, setter];
@@ -131,6 +138,7 @@ export function createGlobalJar(key, initialValue) {
 
 export function getGlobalJar(key) {
     const jar = globalJars.get(key);
+
     if (!jar) {
         throw new Error(`Global jar with key '${key}' does not exist.`);
     }
@@ -151,21 +159,29 @@ export function rerenderComponent(componentName) {
         return;
     }
 
-    if (document.body.contains(componentInfo.container)) {
+    const existingNode = findComponentDOMNode(
+        componentInfo.container,
+        componentName
+    );
+    if (existingNode) {
         currentComponent = componentName;
         adapterIndex = 0;
 
-        const content = componentInfo.componentFn(componentInfo.props);
+        const newContent = componentInfo.componentFn(componentInfo.props);
+        const newNode = render(newContent, document.createDocumentFragment());
 
-        while (componentInfo.container.firstChild) {
-            componentInfo.container.removeChild(
-                componentInfo.container.firstChild
-            );
+        if (newNode && existingNode.parentNode) {
+            existingNode.parentNode.replaceChild(newNode, existingNode);
         }
-        render(content, componentInfo.container);
 
         currentComponent = null;
     } else {
         componentInfo.isMounted = false;
     }
+}
+
+function findComponentDOMNode(container, componentName) {
+    return container.querySelector(
+        `[data-honey-component-id="${componentName}"]`
+    );
 }

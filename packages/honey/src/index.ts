@@ -7,6 +7,8 @@ export {
     getGlobalJar
 } from './adapters';
 
+export { delayLoad } from './delayLoad';
+
 export default { createElement, render };
 
 const version = '1.0.1';
