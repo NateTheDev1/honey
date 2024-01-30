@@ -1,6 +1,10 @@
 import { renderWithAdapters } from './adapters';
 
-export const render = (vnode, container) => {
+export const render = (
+    vnode,
+    container,
+    placeholder: Comment | null = null
+) => {
     if (!vnode) return null;
 
     try {
@@ -13,13 +17,9 @@ export const render = (vnode, container) => {
         }
         // Handle functional components
         else if (typeof vnode.type === 'function') {
-            // Render the component and get its root DOM node
             renderWithAdapters(vnode.type, container, vnode.props);
-
-            // Assuming the component appends its root node to the container
             rootNode = container.lastChild;
 
-            // Assign a unique identifier to the component's root node
             if (
                 rootNode instanceof HTMLElement ||
                 rootNode instanceof SVGElement
@@ -62,21 +62,28 @@ export const render = (vnode, container) => {
             container.appendChild(rootNode);
         }
 
+        if (placeholder && rootNode) {
+            container.replaceChild(rootNode, placeholder);
+        }
+
         return rootNode;
     } catch (promise) {
         if (promise instanceof Promise) {
-            // Handle the promise from lazy-loaded components
+            // Create a placeholder element for the lazy-loaded component
+            const placeholder = document.createComment('lazy-placeholder');
+            container.appendChild(placeholder);
+
             promise
                 .then(() => {
-                    // Re-render once the component has loaded
-                    while (container.firstChild) {
-                        container.removeChild(container.firstChild);
-                    }
-                    render(vnode, container);
+                    // Remove the placeholder and re-render the lazy-loaded component at its position
+                    render(vnode, container, placeholder);
                 })
                 .catch(error => {
                     console.error('Error loading component:', error);
-                    // Handle or log the error as needed
+                    // Optionally, remove the placeholder if the component fails to load
+                    if (placeholder.parentNode) {
+                        placeholder.parentNode.removeChild(placeholder);
+                    }
                 });
         } else {
             throw promise; // Re-throw if it's not a Promise
