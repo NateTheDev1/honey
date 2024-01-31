@@ -1,3 +1,3 @@
 export { inspectLifecycle } from './inspectLifecycle';
-export { delayLoad } from './delayLoad';
-export { createJar } from './createJar';
+export { createJar } from './jar';
+export { createHive, getHive } from './hive';

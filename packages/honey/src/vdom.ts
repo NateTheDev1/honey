@@ -126,7 +126,8 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
     // Handling functional components
     if (typeof vnode.type === 'function') {
         // Use an existing ID if available, otherwise generate a new one
-        let componentId = vnode.props[HONEY_COMPONENT_ID];
+        let componentId = vnode.props['data-honey-component-id'];
+
         if (!componentId) {
             componentId = generateUniqueId();
             vnode.props[HONEY_COMPONENT_ID] = componentId; // Assign the ID to the VNode
@@ -199,7 +200,7 @@ function findDOMNode(
     }
 
     // Use the unique identifier to find the corresponding DOM node
-    const foundElement: any = container.querySelector(
+    const foundElement: any = document.querySelector(
         `[${HONEY_COMPONENT_ID}='${uniqueId}']`
     );
 

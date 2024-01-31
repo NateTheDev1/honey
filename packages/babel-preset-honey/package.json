@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-honey",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Babel preset for the Honey JS framework.",
   "repository": {
     "type": "git",

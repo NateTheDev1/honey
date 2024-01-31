@@ -5,5 +5,5 @@ export * from './adapters/index';
 
 export default { createElement, render };
 
-const version = '1.0.1';
+const version = '1.1.0';
 export const getVersion = () => version;

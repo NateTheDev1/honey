@@ -2,6 +2,8 @@ import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 export default function build() {
     const webpackConfig: any = {
@@ -9,7 +11,9 @@ export default function build() {
         entry: './src/index.tsx',
         output: {
             path: path.resolve(process.cwd(), 'dist'),
-            filename: 'bundle.js'
+            filename: '[name].[contenthash].js',
+            publicPath: './',
+            chunkFilename: '[name].[contenthash].js'
         },
         module: {
             rules: [
@@ -29,6 +33,10 @@ export default function build() {
                 {
                     test: /\.(png|svg|jpg|jpeg|gif)$/i,
                     type: 'asset/resource'
+                },
+                {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader']
                 }
             ]
         },
@@ -36,13 +44,47 @@ export default function build() {
             new HtmlWebpackPlugin({
                 template: './public/index.html'
             }),
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: 'public',
+                        to: './',
+                        globOptions: {
+                            ignore: ['**/*.html'] // Ignore HTML files
+                        }
+                    }
+                ]
+            }),
             new ForkTsCheckerWebpackPlugin({
                 async: false // This option will fail the build on any type error
-            })
+            }),
+            new webpack.ProvidePlugin({
+                honey: ['honey-js-core', 'default']
+            }),
+            new BundleAnalyzerPlugin()
         ],
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
             modules: [path.resolve('./node_modules'), 'node_modules']
+        },
+        optimization: {
+            splitChunks: {
+                chunks: 'all',
+                minSize: 20000, // Minimum size, in bytes, for a chunk to be generated.
+                maxSize: 0, // Maximum size, in bytes, for a chunk to be generated.
+                cacheGroups: {
+                    defaultVendors: {
+                        test: /[\\/]node_modules[\\/]/,
+                        priority: -10,
+                        reuseExistingChunk: true
+                    },
+                    default: {
+                        minChunks: 2,
+                        priority: -20,
+                        reuseExistingChunk: true
+                    }
+                }
+            }
         }
     };
 

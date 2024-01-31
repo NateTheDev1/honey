@@ -44,10 +44,13 @@ export default function start() {
                 template: './public/index.html'
             }),
             new CopyPlugin({
-                patterns: [{ from: 'public', to: 'dist' }]
+                patterns: [{ from: 'public', to: 'public' }]
             }),
             new ForkTsCheckerWebpackPlugin({
                 async: false // This option will fail the build on any type error
+            }),
+            new webpack.ProvidePlugin({
+                honey: ['honey-js-core', 'default']
             })
         ],
         resolve: {

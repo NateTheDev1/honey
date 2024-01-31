@@ -28,7 +28,7 @@ _This roadmap is subject to change at any time. This roadmap is not a guarantee 
 | [Honey Reports](#honey-reports)                                         | ❌     |
 | [Honey Workers](#honey-workers)                                         | ❌     |
 | [Honey DevTools](#honey-devtools)                                       | ❌     |
-| [Local And Global State Management](#local-and-global-state-management) | 🛠️     |
+| [Local And Global State Management](#local-and-global-state-management) | ✅     |
 | [Built-in Router](#built-in-router)                                     | ❌     |
 | [Incremental Virtual DOM](#incremental-virtual-dom)                     | ✅     |
 | [Honey Scripts](#honey-scripts)                                         | ✅     |

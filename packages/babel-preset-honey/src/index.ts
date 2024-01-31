@@ -6,7 +6,10 @@ export default function (api: ConfigAPI) {
     const presets: string[] = ['@babel/preset-typescript'];
     const plugins: string[] = [
         '@babel/plugin-syntax-jsx',
-        'babel-plugin-transform-honey-jsx'
+        [
+            'babel-plugin-transform-honey-jsx',
+            { pragma: 'honey.createElement' }
+        ] as any
     ];
 
     return { presets, plugins };

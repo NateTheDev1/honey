@@ -19,5 +19,8 @@
   },
   "scripts": {
     "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "babel-preset-honey": "^1.0.4"
   }
 }
