@@ -105,6 +105,7 @@ export const patchDOM = (
                 const replacementElement = createDOMElement(patch.newNode);
 
                 const toReplaceElement = findDOMNode(patch.oldNode, container);
+
                 toReplaceElement?.parentNode?.replaceChild(
                     replacementElement,
                     toReplaceElement
@@ -126,7 +127,7 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
     // Handling functional components
     if (typeof vnode.type === 'function') {
         // Use an existing ID if available, otherwise generate a new one
-        let componentId = vnode.props['data-honey-component-id'];
+        let componentId = vnode.props[HONEY_COMPONENT_ID];
 
         if (!componentId) {
             componentId = generateUniqueId();
@@ -175,7 +176,10 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
     if (vnode.children) {
         vnode.children.forEach(child => {
             const childElement = createDOMElement(child);
-            element.appendChild(childElement);
+
+            if (childElement) {
+                element.appendChild(childElement);
+            }
         });
     }
 

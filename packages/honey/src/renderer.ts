@@ -7,9 +7,6 @@ import {
 } from './globalState';
 import { generateUniqueId, getDOMDiff, patchDOM } from './vdom';
 
-let currentComponent = null;
-let adapterIndex = 0;
-
 export const render = (vnode: VNode | null, container: HTMLElement) => {
     let root: HoneyRootContainer = container as HoneyRootContainer;
 
@@ -29,7 +26,7 @@ export const render = (vnode: VNode | null, container: HTMLElement) => {
 };
 
 export function renderWithAdapters(componentFn, container, props) {
-    const componentId = getCurrentRenderingComponent() || generateUniqueId();
+    const componentId = props[HONEY_COMPONENT_ID] ?? generateUniqueId();
 
     // Manage the state and props for the component
     if (!getAdaptersState().has(componentId)) {
@@ -48,6 +45,7 @@ export function renderWithAdapters(componentFn, container, props) {
 
     // Render the component
     const content = componentFn(props);
+
     render(content, container);
 
     // Update the mounted state
