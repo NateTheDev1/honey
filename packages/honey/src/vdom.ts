@@ -3,12 +3,12 @@ import { HoneyRootContainer, VNode } from './createElement';
 import {
     getAdaptersState,
     getComponentVNode,
-    getRoot,
     registerComponentVNode,
     setCurrentRenderingComponent
 } from './globalState';
 import { triggerMountAdapter, triggerUnmountAdapter } from './lifecycle';
 import { renderWithAdapters } from './renderer';
+import { generateUniqueId } from './utils/generateUniqueId';
 
 export type HoneyDOMDiff = {
     requiresUpdate: boolean;
@@ -187,11 +187,6 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
     }
 
     return element;
-}
-
-// Utility function to generate a unique identifier
-export function generateUniqueId(): string {
-    return 'honey_' + Math.random().toString(36).substr(2, 9);
 }
 
 function findDOMNode(
