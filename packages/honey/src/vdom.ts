@@ -152,6 +152,12 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
     // Handling HTML element nodes
     const element = document.createElement(vnode.type);
 
+    if (vnode.props && !vnode.props[HONEY_COMPONENT_ID]) {
+        vnode.props[HONEY_COMPONENT_ID] = generateUniqueId();
+    }
+
+    element.setAttribute(HONEY_COMPONENT_ID, vnode.props[HONEY_COMPONENT_ID]);
+
     // Set properties/attributes and unique identifier
     if (vnode.props) {
         Object.keys(vnode.props).forEach(propName => {
@@ -168,9 +174,6 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
             }
         });
     }
-
-    // Assign a unique identifier
-    element.setAttribute(HONEY_COMPONENT_ID, generateUniqueId());
 
     // Recursive call for children
     if (vnode.children) {
