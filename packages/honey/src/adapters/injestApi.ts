@@ -6,6 +6,13 @@ export type InjestOptions = AxiosRequestConfig;
 
 const stateMap = new Map();
 
+/**
+ * Injest an API endpoint and return the data, error, and loading state.
+ * @param apiEndpoint - The endpoint to injest
+ * @param method - The HTTP method to use
+ * @param options - The options to pass to axios
+ * @returns The data, error, and loading state
+ */
 export const injestApi = (
     apiEndpoint: string,
     method: 'GET' | 'POST' | 'UPDATE' | 'DELETE',

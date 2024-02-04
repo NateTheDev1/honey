@@ -65,6 +65,11 @@ export const createHive = (key, initialValue) => {
     };
 };
 
+/**
+ * Gets the hive object that encapsulates global state management.
+ * @param key - The key to associate the state with.
+ * @returns An object with a `value` getter and a `set` setter to access and update the state respectively.
+ */
 export const getHive = key => {
     const componentId = getCurrentRenderingComponent();
 

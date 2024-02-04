@@ -11,6 +11,11 @@ const haveDepsChanged = (oldDeps: any[], newDeps: any[]): boolean => {
 // Global state to track component's last dependencies
 const lastDependencies = new Map<string, any[]>();
 
+/**
+ * Inspect the lifecycle of a functional component and run the callback when the component mounts or updates.
+ * @param callback - The callback to run when the component mounts or updates
+ * @param deps - The dependencies to watch for changes
+ */
 export function inspectLifecycle(
     callback: () => CleanupFunction | void,
     deps: any[]

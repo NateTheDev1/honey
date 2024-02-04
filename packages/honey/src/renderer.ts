@@ -8,14 +8,24 @@ import {
 import { generateUniqueId } from './utils/generateUniqueId';
 import { getDOMDiff, patchDOM } from './vdom';
 
-export const render = (vnode: VNode | null, container: HTMLElement) => {
+/**
+ * A HoneyTree is a virtual node. Used to better understand the structure of the property for the developer.
+ */
+type HoneyTree = VNode;
+
+/**
+ * Renders a collection of virtual nodes to the DOM using `honey`
+ * @param tree - The virtual node to render
+ * @param container - The container to render the virtual node to. This is a DOM element that honey will render the application to.
+ */
+export const render = (tree: HoneyTree, container: HTMLElement) => {
     let root: HoneyRootContainer = container as HoneyRootContainer;
 
     setRoot(root);
 
     const oldVNode = root._vnode;
 
-    const newVNode = vnode;
+    const newVNode = tree;
 
     const changes = getDOMDiff(oldVNode, newVNode);
 
