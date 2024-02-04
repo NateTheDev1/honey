@@ -16,7 +16,7 @@ export type HoneyDOMDiff = {
 };
 
 export type HoneyDOMPatch = {
-    type: 'ADD' | 'REMOVE' | 'REPLACE';
+    type: 'ADD' | 'REMOVE' | 'REPLACE' | 'UPDATE';
     newNode?: VNode;
     oldNode?: VNode;
 };
@@ -24,23 +24,35 @@ export type HoneyDOMPatch = {
 export const getDOMDiff = (oldVNode: VNode | null, newVNode: VNode | null) => {
     let changes: HoneyDOMDiff = { requiresUpdate: false, patches: [] };
 
-    // Base case: If the oldVNode and newVNode are identical, return no changes
-    if (oldVNode === newVNode) {
-        return changes;
+    // Component identity check
+    if (
+        oldVNode &&
+        newVNode &&
+        oldVNode.props &&
+        newVNode.props &&
+        oldVNode.props[HONEY_COMPONENT_ID] ===
+            newVNode.props[HONEY_COMPONENT_ID]
+    ) {
+        // Here, you would compare properties and states to determine if an update is necessary
+        // For simplicity, we assume an update is needed if props or states differ
+        changes.requiresUpdate = true;
+        changes.patches.push({
+            type: 'UPDATE',
+            oldNode: oldVNode,
+            newNode: newVNode // Assuming props or state might have changed, requiring an update
+        });
     }
 
     // If the oldVNode is null, it means a new node has been added
     if (!oldVNode && newVNode) {
         changes.requiresUpdate = true;
         changes.patches.push({ type: 'ADD', newNode: newVNode });
-        return changes;
     }
 
     // If the newVNode is null, it means a node has been removed
     if (oldVNode && !newVNode) {
         changes.requiresUpdate = true;
         changes.patches.push({ type: 'REMOVE', oldNode: oldVNode });
-        return changes;
     }
 
     // If the types of VNodes are different, replace the old with the new
@@ -51,25 +63,33 @@ export const getDOMDiff = (oldVNode: VNode | null, newVNode: VNode | null) => {
             oldNode: oldVNode,
             newNode: newVNode
         });
-        return changes;
     }
 
     if (oldVNode && newVNode && oldVNode.children && newVNode.children) {
-        const max = Math.max(
+        // Recursively compare children and their possible children
+        const childPatches: any[] = [];
+
+        const maxLength = Math.max(
             oldVNode.children.length,
             newVNode.children.length
         );
-        for (let i = 0; i < max; i++) {
-            const childChanges = getDOMDiff(
-                oldVNode.children[i],
-                newVNode.children[i]
-            );
+
+        for (let i = 0; i < maxLength; i++) {
+            const oldChild = oldVNode.children[i];
+            const newChild = newVNode.children[i];
+
+            const childChanges = getDOMDiff(oldChild, newChild);
+
             if (childChanges.requiresUpdate) {
                 changes.requiresUpdate = true;
-                changes.patches = changes.patches.concat(childChanges.patches);
+                childPatches.concat(childChanges.patches);
             }
         }
+
+        changes.patches = changes.patches.concat(childPatches);
     }
+
+    console.log('DOM diff:', changes);
 
     return changes;
 };
@@ -81,7 +101,14 @@ export const patchDOM = (
     if (!changes.requiresUpdate) return;
 
     changes.patches.forEach(patch => {
+        console.log('Patching:', patch);
         switch (patch.type) {
+            case 'UPDATE':
+                if (!patch.oldNode || !patch.newNode) return;
+                // Assume a function that updates the DOM element based on new VNode properties
+                updateDOMElement(patch.oldNode, patch.newNode, container);
+                // Re-trigger lifecycle hooks as necessary
+                break;
             case 'ADD':
                 if (!patch.newNode) return;
 
@@ -118,6 +145,93 @@ export const patchDOM = (
     });
 };
 
+function updateDOMElement(
+    oldVNode: VNode,
+    newVNode: VNode,
+    container: HoneyRootContainer
+) {
+    const element = findDOMNode(oldVNode, container);
+    if (!element) return;
+
+    // Handle text node updates directly
+    if (typeof newVNode === 'string' || typeof newVNode === 'number') {
+        if (element.textContent !== String(newVNode)) {
+            element.textContent = String(newVNode);
+        }
+        return;
+    }
+
+    if (typeof newVNode.type === 'string') {
+        const newElement = createDOMElement(newVNode);
+        element.parentNode?.replaceChild(newElement, element);
+        return;
+    }
+
+    // Update attributes
+    updateAttributes(element, newVNode.props);
+
+    // Update children if not a text node
+    if (oldVNode.children && newVNode.children) {
+        updateChildren(element, oldVNode.children, newVNode.children);
+    }
+}
+
+function updateChildren(
+    parentElement: any,
+    oldChildren: VNode[],
+    newChildren: VNode[]
+) {
+    // This simple version assumes non-keyed VNodes for demonstration purposes.
+    oldChildren.forEach((oldChild, index) => {
+        const newChild = newChildren[index];
+        if (!newChild) {
+            // New child doesn't exist, remove old
+            if (oldChild.props && oldChild.props[HONEY_COMPONENT_ID]) {
+                const oldDOM = findDOMNode(oldChild, parentElement);
+                if (oldDOM) parentElement.removeChild(oldDOM);
+            }
+        } else if (!oldChild) {
+            // Old child doesn't exist, append new
+            const newDOM = createDOMElement(newChild);
+            parentElement.appendChild(newDOM);
+        } else {
+            // Update existing child
+            updateDOMElement(oldChild, newChild, parentElement);
+        }
+    });
+
+    // Handle case where there are more new children than old children
+    if (newChildren.length > oldChildren.length) {
+        newChildren.slice(oldChildren.length).forEach(newChild => {
+            const newDOM = createDOMElement(newChild);
+            parentElement.appendChild(newDOM);
+        });
+    }
+}
+
+function updateAttributes(
+    element: HTMLElement,
+    newProps: { [key: string]: any }
+) {
+    const allProps = new Set([
+        ...Object.keys(element.attributes),
+        ...Object.keys(newProps)
+    ]);
+
+    allProps.forEach(propName => {
+        const newValue = newProps[propName];
+        const attributeValue = element.getAttribute(propName);
+
+        // If the new value is undefined, remove the attribute
+        if (newValue === undefined) {
+            element.removeAttribute(propName);
+        } else if (attributeValue !== String(newValue)) {
+            // Update or set the new value
+            element.setAttribute(propName, newValue.toString());
+        }
+    });
+}
+
 function createDOMElement(vnode: VNode): HTMLElement | Text {
     // Handling text nodes (strings and numbers)
     if (typeof vnode === 'string' || typeof vnode === 'number') {
@@ -152,7 +266,13 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
     // Handling HTML element nodes
     const element = document.createElement(vnode.type);
 
-    if (vnode.props && !vnode.props[HONEY_COMPONENT_ID]) {
+    // Ensure vnode.props exists
+    if (!vnode.props) {
+        vnode.props = {};
+    }
+
+    // Assign a new unique ID only if it doesn't already have one
+    if (!vnode.props[HONEY_COMPONENT_ID]) {
         vnode.props[HONEY_COMPONENT_ID] = generateUniqueId();
     }
 
@@ -197,7 +317,6 @@ function findDOMNode(
     const uniqueId = vnode.props?.[HONEY_COMPONENT_ID];
 
     if (!uniqueId) {
-        console.error('VNode does not have a unique identifier. VNode:', vnode);
         return null;
     }
 
@@ -232,6 +351,22 @@ export const renderComponent = componentId => {
     const currElement = document.querySelector(
         `[${HONEY_COMPONENT_ID}='${componentId}']`
     );
+
+    newVNode.props[HONEY_COMPONENT_ID] = componentId;
+
+    // Compare children and update child props.[HONEY_COMPONENT_ID] = old child component id
+
+    for (let i = 0; i < newVNode.children.length; i++) {
+        if (
+            newVNode.children[i] &&
+            newVNode.children[i].props &&
+            oldVNode.children[i] &&
+            oldVNode.children[i].props
+        ) {
+            newVNode.children[i].props[HONEY_COMPONENT_ID] =
+                oldVNode.children[i].props[HONEY_COMPONENT_ID];
+        }
+    }
 
     const parent = currElement?.parentNode;
 

@@ -5,7 +5,8 @@ import {
     getCurrentRenderingComponent,
     setRoot
 } from './globalState';
-import { generateUniqueId, getDOMDiff, patchDOM } from './vdom';
+import { generateUniqueId } from './utils/generateUniqueId';
+import { getDOMDiff, patchDOM } from './vdom';
 
 export const render = (vnode: VNode | null, container: HTMLElement) => {
     let root: HoneyRootContainer = container as HoneyRootContainer;
