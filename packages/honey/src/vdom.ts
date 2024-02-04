@@ -89,8 +89,6 @@ export const getDOMDiff = (oldVNode: VNode | null, newVNode: VNode | null) => {
         changes.patches = changes.patches.concat(childPatches);
     }
 
-    console.log('DOM diff:', changes);
-
     return changes;
 };
 
@@ -101,7 +99,6 @@ export const patchDOM = (
     if (!changes.requiresUpdate) return;
 
     changes.patches.forEach(patch => {
-        console.log('Patching:', patch);
         switch (patch.type) {
             case 'UPDATE':
                 if (!patch.oldNode || !patch.newNode) return;

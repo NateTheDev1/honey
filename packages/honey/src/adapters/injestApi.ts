@@ -2,9 +2,16 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { getCurrentRenderingComponent } from '../globalState';
 import { renderComponent } from '../vdom';
 
-export type InjestOptions = AxiosRequestConfig;
+export type InjestOptions = AxiosRequestConfig & {
+    /**
+     * If true, the state will be cached and be accessible from other components. Defaults to false.
+     */
+    stateful?: boolean;
+};
 
-const stateMap = new Map();
+export const apiInjestStateMap = new Map();
+
+export const apiInjestRefreshMap = new Map();
 
 /**
  * Injest an API endpoint and return the data, error, and loading state.
@@ -24,8 +31,9 @@ export const injestApi = (
         throw new Error('injestApi must be called within a component');
     }
 
-    if (!stateMap.has(componentId)) {
-        stateMap.set(componentId, {
+    if (!apiInjestStateMap.has(apiEndpoint)) {
+        console.log('injestApi', apiEndpoint);
+        apiInjestStateMap.set(apiEndpoint, {
             firstFireComplete: false,
             data: null,
             error: null,
@@ -34,7 +42,7 @@ export const injestApi = (
     }
 
     const refresh = async () => {
-        const state = stateMap.get(componentId);
+        const state = apiInjestStateMap.get(apiEndpoint);
 
         if (state) {
             state.loading = true;
@@ -60,20 +68,24 @@ export const injestApi = (
         }
     };
 
-    if (!stateMap.get(componentId).firstFireComplete) {
+    if (!apiInjestRefreshMap.has(apiEndpoint)) {
+        apiInjestRefreshMap.set(apiEndpoint, refresh);
+    }
+
+    if (!apiInjestStateMap.get(apiEndpoint).firstFireComplete) {
         refresh();
-        stateMap.get(componentId).firstFireComplete = true;
+        apiInjestStateMap.get(apiEndpoint).firstFireComplete = true;
     }
 
     return {
         get data() {
-            return stateMap.get(componentId)?.data;
+            return apiInjestStateMap.get(apiEndpoint)?.data;
         },
         get error() {
-            return stateMap.get(componentId)?.error;
+            return apiInjestStateMap.get(apiEndpoint)?.error;
         },
         get loading() {
-            return stateMap.get(componentId)?.loading;
+            return apiInjestStateMap.get(apiEndpoint)?.loading;
         },
         refresh
     };
