@@ -24,7 +24,7 @@ _This roadmap is subject to change at any time. This roadmap is not a guarantee 
 
 | Feature                                                                 | Status |
 | ----------------------------------------------------------------------- | ------ |
-| [Data As A First Class Citizen](#data-as-a-first-class-citizen)         | ❌     |
+| [Data As A First Class Citizen](#data-as-a-first-class-citizen)         | ✅     |
 | [Honey Reports](#honey-reports)                                         | ❌     |
 | [Honey Workers](#honey-workers)                                         | ❌     |
 | [Honey DevTools](#honey-devtools)                                       | ❌     |
