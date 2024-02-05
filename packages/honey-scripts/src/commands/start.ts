@@ -102,7 +102,8 @@ export default function start(port: string = '3000') {
                 path.join(process.cwd(), 'public')
             ],
             compress: true,
-            port: port
+            port: port,
+            historyApiFallback: true
         },
         stats: {
             preset: 'minimal',

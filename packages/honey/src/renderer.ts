@@ -11,7 +11,7 @@ import { getDOMDiff, patchDOM } from './vdom';
 /**
  * A HoneyTree is a virtual node. Used to better understand the structure of the property for the developer.
  */
-type HoneyTree = VNode;
+export type HoneyTree = VNode;
 
 /**
  * Renders a collection of virtual nodes to the DOM using `honey`
