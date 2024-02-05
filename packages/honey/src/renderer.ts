@@ -1,10 +1,7 @@
 import { HONEY_COMPONENT_ID } from './constants';
 import { HoneyRootContainer, VNode } from './createElement';
-import {
-    getAdaptersState,
-    getCurrentRenderingComponent,
-    setRoot
-} from './globalState';
+import { getAdaptersState, setRoot } from './globalState';
+import { getRouterConfig } from './router';
 import { generateUniqueId } from './utils/generateUniqueId';
 import { getDOMDiff, patchDOM } from './vdom';
 
@@ -39,27 +36,41 @@ export const render = (tree: HoneyTree, container: HTMLElement) => {
 export function renderWithAdapters(componentFn, container, props) {
     const componentId = props[HONEY_COMPONENT_ID] ?? generateUniqueId();
 
-    // Manage the state and props for the component
-    if (!getAdaptersState().has(componentId)) {
-        // Initial render
-        getAdaptersState().set(componentId, {
-            componentFn,
-            container,
-            props,
-            isMounted: false
-        });
-    } else {
-        // Subsequent renders (state updates)
+    try {
+        // Manage the state and props for the component
+        if (!getAdaptersState().has(componentId)) {
+            // Initial render
+            getAdaptersState().set(componentId, {
+                componentFn,
+                container,
+                props,
+                isMounted: false
+            });
+        } else {
+            // Subsequent renders (state updates)
+            const componentInfo = getAdaptersState().get(componentId);
+            componentInfo.props = props;
+        }
+
+        // Render the component
+        const content = componentFn(props);
+
+        render(content, container);
+
+        // Update the mounted state
         const componentInfo = getAdaptersState().get(componentId);
-        componentInfo.props = props;
+        componentInfo.isMounted = true;
+    } catch (e) {
+        const errorComp = getRouterConfig()?.errorComponent;
+
+        if (errorComp) {
+            errorComp.props = {
+                error: e
+            };
+
+            render(errorComp, container);
+        }
+
+        console.error(e);
     }
-
-    // Render the component
-    const content = componentFn(props);
-
-    render(content, container);
-
-    // Update the mounted state
-    const componentInfo = getAdaptersState().get(componentId);
-    componentInfo.isMounted = true;
 }

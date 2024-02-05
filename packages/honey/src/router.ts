@@ -1,15 +1,30 @@
 import { HoneyTree, render } from './renderer';
 
-let routerConfig: any | null = null;
+let routerConfig: HoneyRouterConfig | null = null;
 let routerFirstRender = true;
+
+export const getRouterConfig = () => routerConfig;
 
 /**
  * A HoneyTree is a virtual node. Used to better understand the structure of the property for the developer.
  */
 type HoneyRouterConfig = {
-    path: string;
-    component: HoneyTree;
-}[];
+    /**
+     * The paths to render
+     */
+    paths: {
+        path: string;
+        component: HoneyTree;
+    }[];
+    /**
+     * The component to render when an error occurs
+     */
+    errorComponent: HoneyTree;
+    /**
+     * The component to render when no route is found
+     */
+    fallbackComponent: HoneyTree;
+};
 
 /**
  * Renders a Honey application with a router configuration
@@ -30,10 +45,12 @@ export const renderRouter = (router: HoneyRouterConfig) => {
 
     const path = window.location.pathname;
 
-    const route = router.find(route => route.path === path);
+    const route = router.paths.find(route => route.path === path);
 
     if (route) {
         render(route.component, document.body);
+    } else {
+        render(router.fallbackComponent, document.body);
     }
 };
 
@@ -42,6 +59,10 @@ export const renderRouter = (router: HoneyRouterConfig) => {
  * @param path - The path to navigate to
  */
 export const navigate = (path: string) => {
+    if (!routerConfig) {
+        throw new Error('Router not initialized');
+    }
+
     window.history.pushState({}, '', path);
     renderRouter(routerConfig);
 };

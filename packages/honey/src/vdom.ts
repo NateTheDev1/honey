@@ -7,7 +7,8 @@ import {
     setCurrentRenderingComponent
 } from './globalState';
 import { triggerMountAdapter, triggerUnmountAdapter } from './lifecycle';
-import { renderWithAdapters } from './renderer';
+import { render, renderWithAdapters } from './renderer';
+import { getRouterConfig } from './router';
 import { generateUniqueId } from './utils/generateUniqueId';
 
 export type HoneyDOMDiff = {
@@ -342,41 +343,63 @@ export const renderComponent = componentId => {
     setCurrentRenderingComponent(componentId); // Set the current rendering component
 
     // Retrieve the old VNode and re-run the component function
-    const oldVNode = getComponentVNode(componentId);
-    const newVNode = componentInfo.componentFn(componentInfo.props);
+    // const oldVNode = getComponentVNode(componentId);
+    // const newVNode = componentInfo.componentFn(componentInfo.props);
 
-    const currElement = document.querySelector(
-        `[${HONEY_COMPONENT_ID}='${componentId}']`
-    );
+    // const currElement = document.querySelector(
+    //     `[${HONEY_COMPONENT_ID}='${componentId}']`
+    // );
 
-    newVNode.props[HONEY_COMPONENT_ID] = componentId;
+    // newVNode.props[HONEY_COMPONENT_ID] = componentId;
 
-    // Compare children and update child props.[HONEY_COMPONENT_ID] = old child component id
+    // // Compare children and update child props.[HONEY_COMPONENT_ID] = old child component id
 
-    for (let i = 0; i < newVNode.children.length; i++) {
-        if (
-            newVNode.children[i] &&
-            newVNode.children[i].props &&
-            oldVNode.children[i] &&
-            oldVNode.children[i].props
-        ) {
-            newVNode.children[i].props[HONEY_COMPONENT_ID] =
-                oldVNode.children[i].props[HONEY_COMPONENT_ID];
+    // for (let i = 0; i < newVNode.children.length; i++) {
+    //     if (
+    //         newVNode.children[i] &&
+    //         newVNode.children[i].props &&
+    //         oldVNode.children[i] &&
+    //         oldVNode.children[i].props
+    //     ) {
+    //         newVNode.children[i].props[HONEY_COMPONENT_ID] =
+    //             oldVNode.children[i].props[HONEY_COMPONENT_ID];
+    //     }
+    // }
+
+    // const parent = currElement?.parentNode;
+
+    // // Perform diffing and patching
+    // const container = parent as HoneyRootContainer;
+
+    // const changes = getDOMDiff(oldVNode, newVNode);
+
+    // if (changes.requiresUpdate) {
+    //     patchDOM(container, changes);
+    // }
+
+    // registerComponentVNode(componentId, newVNode);
+
+    // setCurrentRenderingComponent(null); // Reset the current rendering component
+
+    try {
+        // Render the component
+        const content = componentInfo.componentFn(componentInfo.props);
+
+        render(content, componentInfo.container);
+
+        // Update the mounted state
+        componentInfo.isMounted = true;
+    } catch (e) {
+        const errorComp = getRouterConfig()?.errorComponent;
+
+        if (errorComp) {
+            errorComp.props = {
+                error: e
+            };
+
+            render(errorComp, componentInfo.container);
         }
+
+        console.error(e);
     }
-
-    const parent = currElement?.parentNode;
-
-    // Perform diffing and patching
-    const container = parent as HoneyRootContainer;
-
-    const changes = getDOMDiff(oldVNode, newVNode);
-
-    if (changes.requiresUpdate) {
-        patchDOM(container, changes);
-    }
-
-    registerComponentVNode(componentId, newVNode);
-
-    setCurrentRenderingComponent(null); // Reset the current rendering component
 };
