@@ -4,3 +4,5 @@ export { createHive, getHive } from './hive';
 export { injestApi } from './injestApi';
 export { consumeApi } from './consumeApi';
 export { memoize } from './memoize';
+export { createId } from './createId';
+export * from './privacy';
