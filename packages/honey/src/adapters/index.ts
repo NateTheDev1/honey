@@ -6,3 +6,4 @@ export { consumeApi } from './consumeApi';
 export { memoize } from './memoize';
 export { createId } from './createId';
 export * from './privacy';
+export { registerMediaQuery } from './registerMediaQuery';
