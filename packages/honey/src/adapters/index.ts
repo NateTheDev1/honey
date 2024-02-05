@@ -7,3 +7,4 @@ export { memoize } from './memoize';
 export { createId } from './createId';
 export * from './privacy';
 export { registerMediaQuery } from './registerMediaQuery';
+export { createBreakpointListener } from './createBreakpointListener';
