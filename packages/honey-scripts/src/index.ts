@@ -3,6 +3,7 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import start from './commands/start';
+
 import build from './commands/build';
 
 yargs(hideBin(process.argv))
@@ -10,17 +11,18 @@ yargs(hideBin(process.argv))
         'start',
         'Start the development server',
         () => {},
-        argv => {
-            console.log('argv', argv);
-            start();
+        args => {
+            //@ts-ignore
+            const port: string = String(args._[1]) ?? '3000';
+
+            start(port);
         }
     )
     .command(
         'build',
         'Build the project for production',
         () => {},
-        argv => {
-            console.log('argv', argv);
+        _ => {
             build();
         }
     )

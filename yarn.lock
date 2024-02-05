@@ -2185,6 +2185,11 @@ dot-case@^3.0.4:
     no-case "^3.0.4"
     tslib "^2.0.3"
 
+dotenv@^16.4.1:
+  version "16.4.1"
+  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.1.tgz"
+  integrity sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==
+
 duplexer@^0.1.2:
   version "0.1.2"
   resolved "https://registry.npmjs.org/duplexer/-/duplexer-0.1.2.tgz"
@@ -2661,10 +2666,11 @@ he@^1.2.0:
   version "1.1.1"
   resolved "file:packages/honey"
   dependencies:
+    axios "^1.6.7"
     babel-preset-honey "^1.0.4"
 
 "honey-scripts@file:F:\\honey\\packages\\honey-scripts":
-  version "1.1.0"
+  version "1.1.2"
   resolved "file:packages/honey-scripts"
   dependencies:
     "@babel/core" "^7.23.9"
@@ -2682,6 +2688,7 @@ he@^1.2.0:
     style-loader "^3.3.4"
     typescript "^5.3.3"
     webpack "^5.90.0"
+    webpack-bundle-analyzer "^4.10.1"
     webpack-cli "^5.1.4"
     webpack-dev-server "^4.15.1"
     webpack-node-externals "^3.0.0"

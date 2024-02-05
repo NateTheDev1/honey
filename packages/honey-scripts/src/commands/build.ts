@@ -5,7 +5,11 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
+import dotenv from 'dotenv';
+
 export default function build() {
+    dotenv.config();
+
     const webpackConfig: any = {
         mode: 'production',
         entry: './src/index.tsx',
@@ -61,7 +65,10 @@ export default function build() {
             new webpack.ProvidePlugin({
                 honey: ['honey-js-core', 'default']
             }),
-            new BundleAnalyzerPlugin()
+            new BundleAnalyzerPlugin(),
+            new webpack.DefinePlugin({
+                'process.env.HONEY': JSON.stringify(process.env)
+            })
         ],
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
