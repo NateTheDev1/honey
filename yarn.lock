@@ -2670,11 +2670,13 @@ he@^1.2.0:
     babel-preset-honey "^1.0.4"
 
 "honey-scripts@file:F:\\honey\\packages\\honey-scripts":
-  version "1.1.2"
+  version "1.2.1"
   resolved "file:packages/honey-scripts"
   dependencies:
     "@babel/core" "^7.23.9"
+    "@babel/parser" "^7.23.9"
     "@babel/preset-env" "^7.23.9"
+    "@babel/traverse" "^7.23.9"
     "@types/node" "^20.11.10"
     "@types/webpack" "^5.28.5"
     "@types/webpack-dev-server" "^4.7.2"
@@ -2683,6 +2685,7 @@ he@^1.2.0:
     babel-preset-honey "^1.0.5"
     copy-webpack-plugin "^12.0.2"
     css-loader "^6.9.1"
+    dotenv "^16.4.1"
     fork-ts-checker-webpack-plugin "^9.0.2"
     html-webpack-plugin "^5.6.0"
     style-loader "^3.3.4"

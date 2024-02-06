@@ -8,3 +8,5 @@ export { createId } from './createId';
 export * from './privacy';
 export { registerMediaQuery } from './registerMediaQuery';
 export { createBreakpointListener } from './createBreakpointListener';
+export { injestUrlParams } from './injestUrlParams';
+export { consumeDynamicRoute } from './consumeDynamicRoute';

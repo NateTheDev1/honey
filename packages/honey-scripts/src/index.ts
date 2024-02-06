@@ -3,19 +3,24 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import start from './commands/start';
-
 import build from './commands/build';
+import { sitemap } from './commands/sitemap';
 
 yargs(hideBin(process.argv))
     .command(
         'start',
         'Start the development server',
-        () => {},
+        yargs => {
+            yargs.positional('port', {
+                describe: 'Port to start the server on',
+                default: 3000,
+                type: 'number',
+                demandOption: true
+            });
+        },
         args => {
-            //@ts-ignore
-            const port: string = String(args._[1]) ?? '3000';
-
-            start(port);
+            const port = String(args.port); // No need for ?? '3000', default is handled by yargs
+            start(port); // Ensuring port is passed as a string if required by the start function
         }
     )
     .command(
@@ -24,6 +29,30 @@ yargs(hideBin(process.argv))
         () => {},
         _ => {
             build();
+        }
+    )
+    .command(
+        'sitemap',
+        'Generate a sitemap for the project.',
+        yargs => {
+            yargs
+                .option('path', {
+                    alias: 'p',
+                    describe: 'Base path for the sitemap',
+                    type: 'string',
+                    demandOption: true // Makes sure the path is always provided
+                })
+                .option('ignoreDynamicRoutes', {
+                    alias: 'i',
+                    describe: 'Ignore dynamic routes',
+                    type: 'boolean',
+                    default: false
+                });
+        },
+        args => {
+            console.log('Generating sitemap...');
+            console.log(args, args.ignoreDynamicRoutes);
+            sitemap(args.path as string, args.ignoreDynamicRoutes as boolean); // Assuming sitemap function can accept the new parameter
         }
     )
     .demandCommand(1, 'You need at least one command before moving on')

@@ -79,7 +79,9 @@ export const getHive = key => {
 
     // Subscribe if not
     if (!globalStateMapSubscriberMap.has(key)) {
-        globalStateMapSubscriberMap.set(key, new Set());
+        throw new Error(
+            'State not found. getHive must be used after createHive.'
+        );
     }
 
     const subscribers = globalStateMapSubscriberMap.get(key);
