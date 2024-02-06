@@ -89,7 +89,8 @@ export default function start(port: string = '3000') {
             }),
             // Env
             new webpack.DefinePlugin({
-                'process.env': JSON.stringify(process.env)
+                'process.env': JSON.stringify(process.env),
+                'process.env.HONEY_ENV': JSON.stringify('development')
             })
         ],
         resolve: {

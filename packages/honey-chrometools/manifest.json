@@ -1,0 +1,40 @@
+{
+    "manifest_version": 2,
+    "name": "Honey ChromeTools",
+    "version": "1.0",
+    "description": "Chrome extension for Honey development tools.",
+    "permissions": [
+        "activeTab",
+        "storage"
+    ],
+    "background": {
+        "scripts": [
+            "src/background.js"
+        ],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "src/content.js"
+            ]
+        }
+    ],
+    "devtools_page": "src/devtools.html",
+    "browser_action": {
+        "default_popup": "src/popup.html",
+        "default_icon": {
+            "16": "images/icon16.png",
+            "48": "images/icon48.png",
+            "128": "images/icon128.png"
+        }
+    },
+    "icons": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+    }
+}
