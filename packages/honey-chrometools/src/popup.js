@@ -1,4 +1,5 @@
 let port;
+
 window.onload = () => {
     port = chrome.runtime.connect({ name: 'popup' });
 
@@ -6,6 +7,15 @@ window.onload = () => {
     port.postMessage({ popupLoaded: true });
 
     port.onMessage.addListener(msg => {
+        if (!msg.honeyMode || !msg.honeyVersion) {
+            document.getElementById('is-not-app').style.display = 'block';
+            document.getElementById('is-app').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('is-not-app').style.display = 'none';
+        document.getElementById('is-app').style.display = 'block';
+
         console.log('panel.js received message:', msg);
         console.log('Honey Version:', msg.honeyVersion);
 

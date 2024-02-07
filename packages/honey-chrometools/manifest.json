@@ -5,7 +5,10 @@
     "description": "Chrome extension for Honey development tools.",
     "permissions": [
         "activeTab",
-        "storage"
+        "storage",
+        "tabs",
+        "<all_urls>",
+        "webNavigation"
     ],
     "background": {
         "scripts": [
