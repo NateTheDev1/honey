@@ -4,7 +4,112 @@
         <title>Panel</title>
     </head>
     <body>
-        <div>Content of Honey ChromeTools Panel</div>
+        <div id="root"></div>
+        <!-- Include Preact and HTM as local scripts -->
+        <!-- <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/preact/10.19.3/preact.min.js"
+            integrity="sha512-+4MW6viwl7aw0DDafFhikAz0f+jvhbybbJX9si6skWZ+ChxpTKz19ffZ9MWmmMu+0HYARHUtscZslJ4typ1RxQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/htm/3.1.1/htm.min.js"
+            integrity="sha512-KexadEzXSG37kmTjpJaBzflzUoGFDyXbhVCcvYmLQtR/P0b5WYZZi8kPXc2cYcmI+c1gqxnknlF+fuwYQbZVvg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script> -->
+        <!-- <script src="panel.js" type="module"></script> -->
+        <script
+            crossorigin
+            src="https://unpkg.com/react@18/umd/react.production.min.js"
+        ></script>
+        <script
+            crossorigin
+            src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+        ></script>
         <script src="panel.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                overflow: hidden;
+                margin: 0;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                    Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+                    'Helvetica Neue', sans-serif;
+                font-size: 16px;
+                line-height: 1.5;
+                background-color: #11110e;
+                color: #fff;
+            }
+
+            button {
+                margin: 0;
+            }
+
+            header {
+                padding: 0;
+                margin: 0;
+                padding-top: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid #333;
+            }
+
+            header select {
+                flex: 1;
+                padding: 10px;
+                background-color: #0c0d0d;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+                border: 1px solid #333;
+            }
+
+            header div {
+                padding: 10px;
+                width: 50%;
+            }
+
+            .nav-center {
+                display: flex;
+                justify-content: center;
+            }
+
+            .nav-right {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .nav-left {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            .nav-left p {
+                font-size: 14px;
+                opacity: 0.7;
+                margin-right: 10px;
+            }
+
+            a {
+                text-decoration: none;
+                color: #fff;
+            }
+
+            #logo {
+                width: 100px;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
     </body>
 </html>
