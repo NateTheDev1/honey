@@ -1,10 +1,16 @@
 window.addEventListener('HoneyAppData', msg => {
     console.log('content.js received message:', msg);
+
+    chrome.runtime.sendMessage({ honeyDetected: true });
+
     if (msg.detail) {
         chrome.runtime.sendMessage({
             honeyVersion: msg.detail.version,
             honeyMode: msg.detail.mode,
-            tree: msg.detail.tree
+            tree: msg.detail.tree,
+            usingRouter: msg.detail.usingRouter,
+            url: msg.detail.url,
+            title: msg.detail.title
         });
     }
 });
@@ -14,6 +20,15 @@ window.addEventListener('HoneySelectorResult', msg => {
     if (msg.detail) {
         chrome.runtime.sendMessage({
             honeySelectorResult: msg.detail
+        });
+    }
+});
+
+window.addEventListener('HoneySelectorClose', msg => {
+    console.log('content.js received message:', msg);
+    if (msg.detail !== undefined) {
+        chrome.runtime.sendMessage({
+            honeySelectorClose: msg.detail
         });
     }
 });

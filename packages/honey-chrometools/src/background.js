@@ -14,7 +14,15 @@ function handlePageChange(tabId) {
             // Check if the new URL's host matches the origin host
             if (currentHost !== originHost) {
                 // Clear msgCache and notify the popup with null values
-                msgCache = { honeyVersion: null, honeyMode: null, tree: null };
+                msgCache = {
+                    honeyVersion: null,
+                    honeyMode: null,
+                    tree: null,
+                    usingRouter: null,
+                    url: tab.url,
+                    title: tab.title
+                };
+
                 if (isPopupOpen && popupPort) {
                     popupPort.postMessage(msgCache);
                 }
@@ -27,12 +35,10 @@ function handlePageChange(tabId) {
 }
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
-    console.log('History State Updated:', details);
     handlePageChange(details.tabId);
 });
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
-    console.log('Tab Activated:', activeInfo);
     handlePageChange(activeInfo.tabId);
 });
 
@@ -55,7 +61,6 @@ chrome.runtime.onConnect.addListener(port => {
 
         // This listener is for messages coming from the popup
         port.onMessage.addListener(msg => {
-            console.log('background.js received message:', msg);
             // If there's a cached message, send it back through the same port
             if (msgCache) {
                 port.postMessage(msgCache);
@@ -65,27 +70,34 @@ chrome.runtime.onConnect.addListener(port => {
         panelPort = port;
 
         port.onMessage.addListener(msg => {
-            console.log('background.js from panel:', msg);
-
             chrome.tabs.query(
                 { active: true, currentWindow: true },
                 function (tabs) {
-                    console.log(tabs);
                     chrome.tabs.sendMessage(tabs[0].id, msg);
                 }
             );
         });
+
+        if (msgCache) {
+            panelPort.postMessage(msgCache);
+        }
     }
 });
 
 let originHost = null; // Store the origin host globally
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log('background.js received message:', request);
-
     if (request.honeySelectorResult) {
+        console.log('HoneySelectorResult', request.honeySelectorResult);
+
         panelPort.postMessage({
             honeySelectorResult: request.honeySelectorResult
+        });
+    }
+
+    if (request.honeySelectorClose !== undefined) {
+        panelPort.postMessage({
+            honeySelectorClose: request.honeySelectorClose
         });
     }
 
@@ -98,12 +110,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             msgCache = {
                 honeyVersion: request.honeyVersion,
                 honeyMode: request.honeyMode,
-                tree: request.tree
+                tree: request.tree,
+                usingRouter: request.usingRouter,
+                url: request.url,
+                title: request.title
             };
+
+            console.log('UPDATE YEET', msgCache);
 
             // If the popup is open, send the message directly
             if (isPopupOpen && popupPort) {
                 popupPort.postMessage(msgCache);
+            }
+
+            if (panelPort) {
+                panelPort.postMessage(msgCache);
             }
         }
     }

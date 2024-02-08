@@ -3,6 +3,7 @@ import { HoneyRootContainer, VNode } from './createElement';
 import { initDevTools } from './devtools';
 import {
     getAdaptersState,
+    getRoot,
     registerComponentVNode,
     setRoot
 } from './globalState';
@@ -17,11 +18,6 @@ export type HoneyTree = VNode;
 
 const __HONEY_APP_VERSION__ = '__HONEY_APP_VERSION__';
 const __HONEY_APP_MODE__ = '__HONEY_APP_MODE__';
-
-/**
- * To control the first render of the application
- */
-let firstRender = true;
 
 /**
  * Renders a collection of virtual nodes to the DOM using `honey`
@@ -44,7 +40,9 @@ export const render = (
 
     let root: HoneyRootContainer = container as HoneyRootContainer;
 
-    // setRoot(root);
+    if (!getRoot()) {
+        setRoot(root);
+    }
 
     const oldVNode = root._vnode;
 
@@ -57,10 +55,6 @@ export const render = (
     }
 
     root._vnode = newVNode;
-
-    if (firstRender) {
-        firstRender = false;
-    }
 
     if (devTools) {
         initDevTools();

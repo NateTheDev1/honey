@@ -1,4 +1,5 @@
-import { HoneyTree, render } from './renderer';
+import { getRoot, setRoot } from './globalState';
+import { HoneyTree, getDevTools, render } from './renderer';
 
 let routerConfig: HoneyRouterConfig | null = null;
 let routerFirstRender = true;
@@ -15,6 +16,13 @@ export type HoneyRouteMeta = {
     lastMod?: string;
 };
 
+type HoneyRoute = {
+    path: string;
+    component: HoneyTree;
+    meta?: HoneyRouteMeta;
+    lastMod?: string;
+};
+
 /**
  * A HoneyTree is a virtual node. Used to better understand the structure of the property for the developer.
  */
@@ -22,12 +30,7 @@ type HoneyRouterConfig = {
     /**
      * The paths to render
      */
-    paths: {
-        path: string;
-        component: HoneyTree;
-        meta?: HoneyRouteMeta;
-        lastMod?: string;
-    }[];
+    paths: HoneyRoute[];
     /**
      * The component to render when an error occurs
      */
@@ -44,7 +47,11 @@ const seoTagStore = new Map<string, any>();
  * Renders a Honey application with a router configuration
  * @param router - The router configuration to render the application with
  */
-export const renderRouter = (router: HoneyRouterConfig) => {
+export const renderRouter = (
+    router: HoneyRouterConfig,
+    container: HTMLElement,
+    enableDevTools: boolean = false
+) => {
     if (!routerConfig) {
         routerConfig = router;
     }
@@ -53,21 +60,12 @@ export const renderRouter = (router: HoneyRouterConfig) => {
         routerFirstRender = false;
         // Listen for events
         window.onpopstate = () => {
-            renderRouter(router);
+            renderRouter(router, container, enableDevTools);
         };
     }
 
-    const path = window.location.pathname;
-
-    // const route = router.paths.find(route => route.path === path);
-
     // Routes can be dynamic
-    let route: {
-        path: string;
-        component: HoneyTree;
-        meta?: HoneyRouteMeta;
-        lastMod?: string;
-    } | null = null;
+    let route: HoneyRoute | null = null;
 
     for (let i = 0; i < router.paths.length; i++) {
         const path = router.paths[i].path;
@@ -99,12 +97,15 @@ export const renderRouter = (router: HoneyRouterConfig) => {
 
         renderTagStore();
 
-        render(route.component, document.body);
+        render(route.component, container, enableDevTools);
     } else {
-        render(router.fallbackComponent, document.body);
+        render(router.fallbackComponent, container, enableDevTools);
     }
 };
 
+/**
+ * Renders a Honey application with a router configuration
+ */
 const renderTagStore = () => {
     seoTagStore.forEach((content, property) => {
         let tag = document.head.querySelector(`meta[property="${property}"]`);
@@ -127,12 +128,14 @@ const renderTagStore = () => {
     });
 };
 
+/**
+ * Gets the current route configuration
+ * @returns The current route configuration
+ */
 export const getConfigForPath = () => {
     if (!routerConfig) {
         throw new Error('Router not initialized');
     }
-
-    const path = window.location.pathname;
 
     // Routes can be dynamic
     let route: {
@@ -195,15 +198,21 @@ export const extractVariablesFromPath = (path: string) => {
  * @param path - The path to navigate to
  */
 export const navigate = (path: string | null) => {
+    const root = getRoot();
+
+    if (!root) {
+        throw new Error('Root not initialized');
+    }
+
     if (!routerConfig) {
         throw new Error('Router not initialized');
     }
 
     if (!path) {
         window.history.back();
-        renderRouter(routerConfig);
+        renderRouter(routerConfig, root, getDevTools());
     } else {
         window.history.pushState({}, '', path);
-        renderRouter(routerConfig);
+        renderRouter(routerConfig, root, getDevTools());
     }
 };

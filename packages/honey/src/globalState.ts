@@ -35,3 +35,16 @@ const adaptersState = new Map();
 export const getAdaptersState = () => {
     return adaptersState;
 };
+
+/**
+ * Tracks the state of the Honey Selector tool in the devtools
+ */
+let honeySelectorActive = false;
+
+export const isHoneySelectorActive = () => {
+    return honeySelectorActive;
+};
+
+export const setHoneySelectorActive = (active: boolean) => {
+    honeySelectorActive = active;
+};

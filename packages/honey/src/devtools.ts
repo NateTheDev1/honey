@@ -1,3 +1,12 @@
+import {
+    HONEY_DEVTOOL_INIT_EVENT,
+    HONEY_SELECTOR_ACTIVE_EVENT,
+    HONEY_SELECTOR_CLOSE_EVENT,
+    HONEY_SELECTOR_RESULT_EVENT
+} from './constants';
+import { isHoneySelectorActive, setHoneySelectorActive } from './globalState';
+import { getRouterConfig } from './router';
+
 interface SerializedNode {
     type: number;
     tagName?: string;
@@ -6,7 +15,18 @@ interface SerializedNode {
     textContent?: string | null;
 }
 
-let honeySelectorActive = false;
+type HoneyDevToolInitEvent = CustomEvent<{
+    version: string;
+    mode: string;
+    tree: SerializedNode;
+    usingRouter?: boolean;
+    url: string;
+    title: string;
+}>;
+
+type HoneySelectorActiveEvent = CustomEvent<boolean>;
+
+type HoneySelectorResultEvent = CustomEvent<SerializedNode>;
 
 export const serializeNode = (node: Node): SerializedNode => {
     const obj: SerializedNode = {
@@ -37,11 +57,7 @@ export const serializeNode = (node: Node): SerializedNode => {
     return obj;
 };
 
-let lastSentMessage: {
-    version: string;
-    mode: string;
-    tree: SerializedNode;
-} | null = null;
+let lastSentMessage: HoneyDevToolInitEvent['detail'] | null = null;
 
 export const initDevTools = () => {
     const HONEY_ENV: string = String(process.env.HONEY_ENV || 'development');
@@ -49,8 +65,13 @@ export const initDevTools = () => {
     const evData = {
         version: '1.1.2',
         mode: HONEY_ENV,
-        tree: serializeNode(document.body)
+        tree: serializeNode(document.body),
+        usingRouter: getRouterConfig() !== null,
+        url: window.location.href,
+        title: document.title
     };
+
+    console.log('Honey DevTools initialized', evData);
 
     if (
         lastSentMessage &&
@@ -59,11 +80,14 @@ export const initDevTools = () => {
         return;
     }
 
-    const event = new CustomEvent('HoneyAppData', {
-        detail: {
-            ...evData
+    const event: HoneyDevToolInitEvent = new CustomEvent(
+        HONEY_DEVTOOL_INIT_EVENT,
+        {
+            detail: {
+                ...evData
+            }
         }
-    });
+    );
 
     lastSentMessage = evData;
 
@@ -71,15 +95,14 @@ export const initDevTools = () => {
         window.dispatchEvent(event);
     }, 500);
 
-    window.addEventListener('HoneySelectorActive', (e: any) => {
-        console.log('HoneySelectorActive', e.detail);
-        honeySelectorActive = e.detail;
+    window.addEventListener(HONEY_SELECTOR_ACTIVE_EVENT, (e: any) => {
+        setHoneySelectorActive(e.detail);
     });
 
     document.addEventListener(
         'mouseover',
         function (event) {
-            if (!honeySelectorActive) {
+            if (!isHoneySelectorActive()) {
                 return;
             }
 
@@ -90,10 +113,7 @@ export const initDevTools = () => {
                 return;
             }
 
-            // targetElement.style.border = '2px solid red';
-
-            // Sharp, modern look
-            targetElement.style.border = '2px solid #ff0000';
+            targetElement.style.background = 'rgba(248, 195, 60, 10.5)';
             targetElement.style.borderRadius = '3px';
             targetElement.style.cursor = 'pointer';
             targetElement.style.opacity = '0.5';
@@ -104,7 +124,7 @@ export const initDevTools = () => {
             const serializedElement = serializeNode(targetElement);
 
             window.dispatchEvent(
-                new CustomEvent('HoneySelectorResult', {
+                new CustomEvent(HONEY_SELECTOR_RESULT_EVENT, {
                     detail: serializedElement
                 })
             );
@@ -115,7 +135,7 @@ export const initDevTools = () => {
     document.addEventListener(
         'mouseout',
         function (event) {
-            if (!honeySelectorActive) {
+            if (!isHoneySelectorActive()) {
                 return;
             }
 
@@ -124,7 +144,7 @@ export const initDevTools = () => {
             }
 
             // Remove the highlight from the element
-            event.target.style.border = '';
+            event.target.style.background = '';
             event.target.style.borderRadius = '';
             event.target.style.cursor = '';
             event.target.style.opacity = '';
@@ -135,7 +155,7 @@ export const initDevTools = () => {
     document.addEventListener(
         'click',
         function (event) {
-            if (!honeySelectorActive) {
+            if (!isHoneySelectorActive()) {
                 return;
             }
 
@@ -150,8 +170,24 @@ export const initDevTools = () => {
             // Serialize the clicked element
             const serializedElement = serializeNode(event.target);
 
+            // Revert
+            event.target.style.background = '';
+            event.target.style.borderRadius = '';
+            event.target.style.cursor = '';
+            event.target.style.opacity = '';
+
+            setHoneySelectorActive(false);
+
             window.dispatchEvent(
-                new CustomEvent('HoneySelectorResult', {
+                new CustomEvent(HONEY_SELECTOR_CLOSE_EVENT, {
+                    detail: {
+                        honeySelectorClose: true
+                    }
+                })
+            );
+
+            window.dispatchEvent(
+                new CustomEvent(HONEY_SELECTOR_RESULT_EVENT, {
                     detail: serializedElement
                 })
             );

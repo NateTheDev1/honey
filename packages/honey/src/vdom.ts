@@ -22,6 +22,12 @@ export type HoneyDOMPatch = {
     oldNode?: VNode;
 };
 
+/**
+ * Compares two virtual nodes and returns a diff of changes
+ * @param oldVNode - The old virtual node
+ * @param newVNode - The new virtual node
+ * @returns - A diff of changes
+ */
 export const getDOMDiff = (oldVNode: VNode | null, newVNode: VNode | null) => {
     let changes: HoneyDOMDiff = { requiresUpdate: false, patches: [] };
 
@@ -93,6 +99,12 @@ export const getDOMDiff = (oldVNode: VNode | null, newVNode: VNode | null) => {
     return changes;
 };
 
+/**
+ * Applies a diff of changes to the DOM
+ * @param container - The root container to apply changes to
+ * @param changes - The diff of changes to apply
+ * @returns - A diff of changes
+ */
 export const patchDOM = (
     container: HoneyRootContainer,
     changes: HoneyDOMDiff
