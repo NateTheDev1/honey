@@ -1,22 +1,60 @@
-// function Hello(props) {
-//     return React.createElement('h1', null, `Hello ${props.text}`);
+// interface SerializedNode {
+//     type: number;
+//     tagName?: string;
+//     attributes?: { [key: string]: string | null };
+//     children: SerializedNode[];
+//     textContent?: string | null;
 // }
-
-// ReactDOM.render(
-//     React.createElement(Hello, { text: 'World' }, null),
-//     document.getElementById('root')
-// );
 
 githubIconUrl = chrome.extension.getURL('/images/github-icon.svg');
 
+port = chrome.runtime.connect({ name: 'panel' });
+
+port.postMessage({ getTree: true });
+
+port.onMessage.addListener(msg => {
+    if (msg.pageTree) {
+        console.log('panel.js received message:', msg);
+    }
+});
+
 function Header(props) {
+    const [tab, setTab] = React.useState('home');
+    const [selectorActive, setSelectorActive] = React.useState(false);
+
+    const notifySelectorActive = active => {
+        port.postMessage({ selectorActive: active });
+    };
+
     return React.createElement('header', null, [
         React.createElement('div', { className: 'nav-left' }, [
+            React.createElement(
+                'svg',
+                {
+                    xmlns: 'http://www.w3.org/2000/svg',
+                    width: '1em',
+                    height: '1em',
+                    viewBox: '0 0 1024 1024',
+                    className: selectorActive
+                        ? 'selector-icon active'
+                        : 'selector-icon',
+                    onClick: () => {
+                        notifySelectorActive(!selectorActive);
+                        setSelectorActive(!selectorActive);
+                    }
+                },
+                [
+                    React.createElement('path', {
+                        fill: 'currentColor',
+                        d: 'M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h360c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H184V184h656v320c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V144c0-17.7-14.3-32-32-32M653.3 599.4l52.2-52.2a8.01 8.01 0 0 0-4.7-13.6l-179.4-21c-5.1-.6-9.5 3.7-8.9 8.9l21 179.4c.8 6.6 8.9 9.4 13.6 4.7l52.4-52.4l256.2 256.2c3.1 3.1 8.2 3.1 11.3 0l42.4-42.4c3.1-3.1 3.1-8.2 0-11.3z'
+                    })
+                ]
+            ),
             React.createElement('select', { id: 'tab-select' }, [
                 React.createElement('option', { value: 'home' }, 'Home'),
                 React.createElement(
                     'option',
-                    { value: 'settings' },
+                    { value: tab, onChange: e => setTab(e.target.value) },
                     'Settings'
                 ),
                 React.createElement('option', { value: 'about' }, 'About')
@@ -71,13 +109,3 @@ ReactDOM.render(
     React.createElement(App, null, null),
     document.getElementById('root')
 );
-
-port = chrome.runtime.connect({ name: 'panel' });
-
-port.postMessage({ getTree: true });
-
-port.onMessage.addListener(msg => {
-    if (msg.pageTree) {
-        console.log('panel.js received message:', msg);
-    }
-});

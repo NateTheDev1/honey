@@ -1,4 +1,5 @@
 let popupPort = null; // Store the popup's port globally
+let panelPort = null; // Store the panel's port globally
 let msgCache = null; // Cache messages if needed
 let isPopupOpen = false; // Store the popup's state globally
 
@@ -61,10 +62,15 @@ chrome.runtime.onConnect.addListener(port => {
             }
         });
     } else if (port.name === 'panel') {
+        panelPort = port;
+
         port.onMessage.addListener(msg => {
+            console.log('background.js from panel:', msg);
+
             chrome.tabs.query(
                 { active: true, currentWindow: true },
                 function (tabs) {
+                    console.log(tabs);
                     chrome.tabs.sendMessage(tabs[0].id, msg);
                 }
             );
@@ -76,6 +82,13 @@ let originHost = null; // Store the origin host globally
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('background.js received message:', request);
+
+    if (request.honeySelectorResult) {
+        panelPort.postMessage({
+            honeySelectorResult: request.honeySelectorResult
+        });
+    }
+
     if (request.honeyVersion && request.honeyMode) {
         // Get the tab URL to extract the host
         if (sender.tab) {

@@ -6,6 +6,8 @@ interface SerializedNode {
     textContent?: string | null;
 }
 
+let honeySelectorActive = false;
+
 export const serializeNode = (node: Node): SerializedNode => {
     const obj: SerializedNode = {
         type: node.nodeType,
@@ -68,4 +70,92 @@ export const initDevTools = () => {
     setTimeout(() => {
         window.dispatchEvent(event);
     }, 500);
+
+    window.addEventListener('HoneySelectorActive', (e: any) => {
+        console.log('HoneySelectorActive', e.detail);
+        honeySelectorActive = e.detail;
+    });
+
+    document.addEventListener(
+        'mouseover',
+        function (event) {
+            if (!honeySelectorActive) {
+                return;
+            }
+
+            // Highlight the element under the mouse cursor
+            const targetElement = event.target;
+
+            if (!targetElement || !(targetElement instanceof HTMLElement)) {
+                return;
+            }
+
+            // targetElement.style.border = '2px solid red';
+
+            // Sharp, modern look
+            targetElement.style.border = '2px solid #ff0000';
+            targetElement.style.borderRadius = '3px';
+            targetElement.style.cursor = 'pointer';
+            targetElement.style.opacity = '0.5';
+
+            // Prevent multiple borders on nested elements
+            event.stopPropagation();
+
+            const serializedElement = serializeNode(targetElement);
+
+            window.dispatchEvent(
+                new CustomEvent('HoneySelectorResult', {
+                    detail: serializedElement
+                })
+            );
+        },
+        true
+    );
+
+    document.addEventListener(
+        'mouseout',
+        function (event) {
+            if (!honeySelectorActive) {
+                return;
+            }
+
+            if (!event.target || !(event.target instanceof HTMLElement)) {
+                return;
+            }
+
+            // Remove the highlight from the element
+            event.target.style.border = '';
+            event.target.style.borderRadius = '';
+            event.target.style.cursor = '';
+            event.target.style.opacity = '';
+        },
+        true
+    );
+
+    document.addEventListener(
+        'click',
+        function (event) {
+            if (!honeySelectorActive) {
+                return;
+            }
+
+            // Prevent the click from performing its default action
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!event.target || !(event.target instanceof HTMLElement)) {
+                return;
+            }
+
+            // Serialize the clicked element
+            const serializedElement = serializeNode(event.target);
+
+            window.dispatchEvent(
+                new CustomEvent('HoneySelectorResult', {
+                    detail: serializedElement
+                })
+            );
+        },
+        true
+    );
 };
