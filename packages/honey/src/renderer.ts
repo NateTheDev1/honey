@@ -1,6 +1,11 @@
 import { HONEY_COMPONENT_ID } from './constants';
 import { HoneyRootContainer, VNode } from './createElement';
-import { getAdaptersState, setRoot } from './globalState';
+import { initDevTools } from './devtools';
+import {
+    getAdaptersState,
+    registerComponentVNode,
+    setRoot
+} from './globalState';
 import { getRouterConfig } from './router';
 import { generateUniqueId } from './utils/generateUniqueId';
 import { getDOMDiff, patchDOM } from './vdom';
@@ -20,27 +25,26 @@ let firstRender = true;
 
 /**
  * Renders a collection of virtual nodes to the DOM using `honey`
+ */
+let devTools = false;
+
+export const getDevTools = () => devTools;
+
+/**
+ * Renders a collection of virtual nodes to the DOM using `honey`
  * @param tree - The virtual node to render
  * @param container - The container to render the virtual node to. This is a DOM element that honey will render the application to.
  */
-export const render = (tree: HoneyTree, container: HTMLElement) => {
+export const render = (
+    tree: HoneyTree,
+    container: HTMLElement,
+    enableDevTools: boolean = false
+) => {
+    devTools = enableDevTools;
+
     let root: HoneyRootContainer = container as HoneyRootContainer;
 
-    if (firstRender) {
-        firstRender = false;
-
-        const HONEY_ENV = process.env.HONEY_ENV;
-
-        const event = new CustomEvent('HoneyAppData', {
-            detail: { version: '1.1.2', mode: HONEY_ENV }
-        });
-
-        setTimeout(() => {
-            window.dispatchEvent(event);
-        }, 500);
-    }
-
-    setRoot(root);
+    // setRoot(root);
 
     const oldVNode = root._vnode;
 
@@ -53,6 +57,14 @@ export const render = (tree: HoneyTree, container: HTMLElement) => {
     }
 
     root._vnode = newVNode;
+
+    if (firstRender) {
+        firstRender = false;
+    }
+
+    if (devTools) {
+        initDevTools();
+    }
 };
 
 export function renderWithAdapters(componentFn, container, props) {
@@ -77,7 +89,9 @@ export function renderWithAdapters(componentFn, container, props) {
         // Render the component
         const content = componentFn(props);
 
-        render(content, container);
+        content.props[HONEY_COMPONENT_ID] = componentId;
+
+        render(content, container, devTools);
 
         // Update the mounted state
         const componentInfo = getAdaptersState().get(componentId);
@@ -90,7 +104,7 @@ export function renderWithAdapters(componentFn, container, props) {
                 error: e
             };
 
-            render(errorComp, container);
+            render(errorComp, container, devTools);
         }
 
         console.error(e);

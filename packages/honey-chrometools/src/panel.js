@@ -71,3 +71,13 @@ ReactDOM.render(
     React.createElement(App, null, null),
     document.getElementById('root')
 );
+
+port = chrome.runtime.connect({ name: 'panel' });
+
+port.postMessage({ getTree: true });
+
+port.onMessage.addListener(msg => {
+    if (msg.pageTree) {
+        console.log('panel.js received message:', msg);
+    }
+});

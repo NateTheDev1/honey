@@ -13,7 +13,7 @@ function handlePageChange(tabId) {
             // Check if the new URL's host matches the origin host
             if (currentHost !== originHost) {
                 // Clear msgCache and notify the popup with null values
-                msgCache = { honeyVersion: null, honeyMode: null };
+                msgCache = { honeyVersion: null, honeyMode: null, tree: null };
                 if (isPopupOpen && popupPort) {
                     popupPort.postMessage(msgCache);
                 }
@@ -60,6 +60,15 @@ chrome.runtime.onConnect.addListener(port => {
                 port.postMessage(msgCache);
             }
         });
+    } else if (port.name === 'panel') {
+        port.onMessage.addListener(msg => {
+            chrome.tabs.query(
+                { active: true, currentWindow: true },
+                function (tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, msg);
+                }
+            );
+        });
     }
 });
 
@@ -75,7 +84,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             msgCache = {
                 honeyVersion: request.honeyVersion,
-                honeyMode: request.honeyMode
+                honeyMode: request.honeyMode,
+                tree: request.tree
             };
 
             // If the popup is open, send the message directly

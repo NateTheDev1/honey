@@ -7,7 +7,7 @@ import {
     setCurrentRenderingComponent
 } from './globalState';
 import { triggerMountAdapter, triggerUnmountAdapter } from './lifecycle';
-import { render, renderWithAdapters } from './renderer';
+import { getDevTools, render, renderWithAdapters } from './renderer';
 import { getRouterConfig } from './router';
 import { generateUniqueId } from './utils/generateUniqueId';
 
@@ -149,6 +149,7 @@ function updateDOMElement(
     container: HoneyRootContainer
 ) {
     const element = findDOMNode(oldVNode, container);
+
     if (!element) return;
 
     // Handle text node updates directly
@@ -156,13 +157,11 @@ function updateDOMElement(
         if (element.textContent !== String(newVNode)) {
             element.textContent = String(newVNode);
         }
-        return;
     }
 
     if (typeof newVNode.type === 'string') {
         const newElement = createDOMElement(newVNode);
         element.parentNode?.replaceChild(newElement, element);
-        return;
     }
 
     // Update attributes
@@ -248,6 +247,7 @@ function createDOMElement(vnode: VNode): HTMLElement | Text {
         setCurrentRenderingComponent(componentId);
 
         const container = document.createElement('div');
+
         renderWithAdapters(vnode.type, container, vnode.props);
 
         registerComponentVNode(componentId, vnode);
@@ -342,50 +342,13 @@ export const renderComponent = componentId => {
 
     setCurrentRenderingComponent(componentId); // Set the current rendering component
 
-    // Retrieve the old VNode and re-run the component function
-    // const oldVNode = getComponentVNode(componentId);
-    // const newVNode = componentInfo.componentFn(componentInfo.props);
-
-    // const currElement = document.querySelector(
-    //     `[${HONEY_COMPONENT_ID}='${componentId}']`
-    // );
-
-    // newVNode.props[HONEY_COMPONENT_ID] = componentId;
-
-    // // Compare children and update child props.[HONEY_COMPONENT_ID] = old child component id
-
-    // for (let i = 0; i < newVNode.children.length; i++) {
-    //     if (
-    //         newVNode.children[i] &&
-    //         newVNode.children[i].props &&
-    //         oldVNode.children[i] &&
-    //         oldVNode.children[i].props
-    //     ) {
-    //         newVNode.children[i].props[HONEY_COMPONENT_ID] =
-    //             oldVNode.children[i].props[HONEY_COMPONENT_ID];
-    //     }
-    // }
-
-    // const parent = currElement?.parentNode;
-
-    // // Perform diffing and patching
-    // const container = parent as HoneyRootContainer;
-
-    // const changes = getDOMDiff(oldVNode, newVNode);
-
-    // if (changes.requiresUpdate) {
-    //     patchDOM(container, changes);
-    // }
-
-    // registerComponentVNode(componentId, newVNode);
-
-    // setCurrentRenderingComponent(null); // Reset the current rendering component
-
     try {
         // Render the component
         const content = componentInfo.componentFn(componentInfo.props);
 
-        render(content, componentInfo.container);
+        content.props[HONEY_COMPONENT_ID] = componentId;
+
+        render(content, componentInfo.container, getDevTools());
 
         // Update the mounted state
         componentInfo.isMounted = true;
@@ -397,9 +360,11 @@ export const renderComponent = componentId => {
                 error: e
             };
 
-            render(errorComp, componentInfo.container);
+            render(errorComp, componentInfo.container, getDevTools());
         }
 
         console.error(e);
     }
+
+    setCurrentRenderingComponent(null); // Reset the current rendering component
 };
