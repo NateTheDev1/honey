@@ -10,3 +10,4 @@ export { registerMediaQuery } from './registerMediaQuery';
 export { createBreakpointListener } from './createBreakpointListener';
 export { injestUrlParams } from './injestUrlParams';
 export { consumeDynamicRoute } from './consumeDynamicRoute';
+export { createSEOReport } from './performance/generateHoneyReport';

@@ -104,7 +104,7 @@ export const renderRouter = (
 };
 
 /**
- * Renders a Honey application with a router configuration
+ * Renders meta and Open Graph tags from a honey router configuration
  */
 const renderTagStore = () => {
     seoTagStore.forEach((content, property) => {

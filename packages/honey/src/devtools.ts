@@ -71,8 +71,6 @@ export const initDevTools = () => {
         title: document.title
     };
 
-    console.log('Honey DevTools initialized', evData);
-
     if (
         lastSentMessage &&
         JSON.stringify(lastSentMessage) === JSON.stringify(evData)
