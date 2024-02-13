@@ -1,6 +1,4 @@
 window.addEventListener('HoneyAppData', msg => {
-    console.log('content.js received message:', msg);
-
     chrome.runtime.sendMessage({ honeyDetected: true });
 
     if (msg.detail) {
@@ -16,7 +14,6 @@ window.addEventListener('HoneyAppData', msg => {
 });
 
 window.addEventListener('HoneySelectorResult', msg => {
-    console.log('content.js received message:', msg);
     if (msg.detail) {
         chrome.runtime.sendMessage({
             honeySelectorResult: msg.detail
@@ -25,7 +22,6 @@ window.addEventListener('HoneySelectorResult', msg => {
 });
 
 window.addEventListener('HoneySelectorClose', msg => {
-    console.log('content.js received message:', msg);
     if (msg.detail !== undefined) {
         chrome.runtime.sendMessage({
             honeySelectorClose: msg.detail
@@ -34,7 +30,6 @@ window.addEventListener('HoneySelectorClose', msg => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('content.js received message:', message);
     if (message['selectorActive'] !== undefined) {
         const event = new CustomEvent('HoneySelectorActive', {
             detail: message.selectorActive

@@ -11,7 +11,8 @@ yargs(hideBin(process.argv))
         'start',
         'Start the development server',
         yargs => {
-            yargs.positional('port', {
+            yargs.option('port', {
+                alias: 'p',
                 describe: 'Port to start the server on',
                 default: 3000,
                 type: 'number',
@@ -19,7 +20,7 @@ yargs(hideBin(process.argv))
             });
         },
         args => {
-            const port = String(args.port); // No need for ?? '3000', default is handled by yargs
+            const port = String(args.port ?? 3000); // No need for ?? '3000', default is handled by yargs
             start(port); // Ensuring port is passed as a string if required by the start function
         }
     )
